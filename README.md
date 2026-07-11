@@ -2,7 +2,7 @@
 
 A single, unified frontend that ties together a multi-service payments platform, with drill-down navigation into each capability instead of presenting them as disconnected demos.
 
-**Live:** https://payments-platform.vercel.app
+**Live:** https://payments-platform-theta.vercel.app
 
 ## Why this exists
 
