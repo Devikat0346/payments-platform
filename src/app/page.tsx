@@ -1,65 +1,104 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { useOverviewStatus } from "@/lib/useOverviewStatus";
+
+interface ModuleCard {
+  href: string;
+  title: string;
+  description: string;
+  status: "live" | "soon";
+  statLine?: string;
+}
 
 export default function Home() {
+  const status = useOverviewStatus();
+
+  const modules: ModuleCard[] = [
+    {
+      href: "/observability",
+      title: "Observability",
+      description:
+        "Simulates credit, debit, and wire transactions across real-time and batch origination channels, with live SLIs, SLOs, and error-budget burn.",
+      status: "live",
+      statLine:
+        status.channelsTotal !== null
+          ? `${status.channelsHealthy}/${status.channelsTotal} channels healthy`
+          : undefined,
+    },
+    {
+      href: "/incidents",
+      title: "Incident Copilot",
+      description:
+        "Watches the observability platform's telemetry and uses an LLM to independently diagnose likely root cause the moment a channel degrades.",
+      status: "live",
+      statLine: status.activeCases !== null ? `${status.activeCases} active case(s)` : undefined,
+    },
+    {
+      href: "/reconciliation",
+      title: "Reconciliation",
+      description:
+        "Batch-reconciles origination records against settlement/posting records, flags breaks, and scores transactions for anomalies.",
+      status: "soon",
+    },
+    {
+      href: "/insights",
+      title: "Business Insights",
+      description:
+        "Payments economics (interchange, fees), KPI tracking, and ROI/scenario modeling for new payments initiatives — a business-case dashboard.",
+      status: "soon",
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="px-6 py-12 md:px-12 lg:px-20 max-w-[1400px] mx-auto">
+      <section className="max-w-2xl mb-12">
+        <h1 className="text-3xl font-semibold tracking-tight mb-3">
+          A payments platform, built end-to-end
+        </h1>
+        <p className="text-secondary">
+          Every module below reads from the same underlying multi-channel transaction data —
+          credit, debit, and wire, across real-time and batch origination rails. It&apos;s one
+          system, not four demos: transactions flow in, get observed, get triaged by AI when
+          something breaks, and roll up into reconciliation and business reporting.
+        </p>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {modules.map((m) => (
+          <Link
+            key={m.href}
+            href={m.status === "live" ? m.href : "#"}
+            aria-disabled={m.status !== "live"}
+            className="card p-6 flex flex-col gap-3 transition-transform"
+            style={{
+              opacity: m.status === "live" ? 1 : 0.6,
+              cursor: m.status === "live" ? "pointer" : "default",
+              pointerEvents: m.status === "live" ? "auto" : "none",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <div className="flex items-center justify-between">
+              <h2 className="font-semibold text-lg">{m.title}</h2>
+              <span
+                className="text-xs font-medium px-2 py-0.5 rounded-full"
+                style={{
+                  color: m.status === "live" ? "var(--status-good)" : "var(--text-muted)",
+                  border: `1px solid ${m.status === "live" ? "var(--status-good)" : "var(--border)"}`,
+                }}
+              >
+                {m.status === "live" ? "Live" : "Coming soon"}
+              </span>
+            </div>
+            <p className="text-secondary text-sm">{m.description}</p>
+            {m.statLine && <p className="text-muted text-xs mt-auto pt-2">{m.statLine}</p>}
+          </Link>
+        ))}
+      </section>
+
+      <footer className="mt-12 text-muted text-xs">
+        Synthetic data, generated in-process for demonstration purposes. No real payment data is
+        used or stored.
+      </footer>
     </div>
   );
 }

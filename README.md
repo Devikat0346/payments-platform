@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Payments Platform
 
-## Getting Started
+A single, unified frontend that ties together a multi-service payments platform, with drill-down navigation into each capability instead of presenting them as disconnected demos.
 
-First, run the development server:
+**Live:** https://payments-platform.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Why this exists
+
+The backends behind this are genuinely separate services with their own repos, their own deploy lifecycle, and their own reason to exist independently:
+
+- [payments-observability-platform](https://github.com/Devikat0346/payments-observability-platform) — the transaction simulator and SLI/SLO/error-budget engine that everything else reads from
+- [payments-incident-copilot](https://github.com/Devikat0346/payments-incident-copilot) — polls the observability platform and uses an LLM to diagnose degraded channels
+
+But presenting them as five unrelated demo links undersells the point: they're not independent projects, they're modules of one payments platform — transactions flow in, get observed, get triaged by AI when something breaks, and (soon) roll up into reconciliation and business reporting. This app is the single entry point that makes that relationship visible: one nav, one live URL, drill down into whichever capability you want to see.
+
+## Architecture
+
+```
+                         ┌─────────────────────────────┐
+                         │      payments-platform       │   ← this repo (frontend only)
+                         │   (Next.js, one deployment)  │
+                         └───────────────┬───────────────┘
+                    ┌────────────────────┼────────────────────┐
+                    ▼                    ▼                    ▼
+        ┌───────────────────┐  ┌───────────────────┐   (Reconciliation,
+        │ observability-api  │  │ incident-copilot-  │    Insights — planned,
+        │ (own repo/deploy)  │  │ api (own repo/     │    will add their own
+        │                    │  │ deploy)             │    backend services here)
+        └───────────────────┘  └───────────────────┘
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Each backend remains an independently deployable service with its own README, tech stack, and design decisions documented in its own repo. This repo only contains the presentation layer that unifies them.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` — overview, cross-module status, links into each module
+- `/observability` — live dashboard for the transaction simulator
+- `/incidents` — live dashboard for the AI incident copilot
+- `/reconciliation` — placeholder until Project 3's backend exists
+- `/insights` — placeholder until Project 5's backend exists
 
-## Learn More
+## Tech stack
 
-To learn more about Next.js, take a look at the following resources:
+Next.js 16 (App Router), TypeScript, Tailwind CSS, Recharts. No backend of its own — every route fetches from its module's live API via REST + WebSocket.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Running locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+# .env.local:
+# NEXT_PUBLIC_OBSERVABILITY_API_URL=<observability backend URL>
+# NEXT_PUBLIC_OBSERVABILITY_WS_URL=<observability backend wss URL>
+# NEXT_PUBLIC_INCIDENTS_API_URL=<incident copilot backend URL>
+# NEXT_PUBLIC_INCIDENTS_WS_URL=<incident copilot backend wss URL>
+npm run dev
+```
