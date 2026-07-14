@@ -32,6 +32,10 @@ export interface ChannelMetric {
   slo_latency_p99_ms: number | null;
   error_budget_burn_pct: number;
   active_incident: Incident | null;
+  // Present only for channels that can be more than one transaction type (card
+  // and ACH channels) — e.g. { credit: {...}, debit: {...} }. null for channels
+  // with exactly one possible type (wire, Zelle), since there's nothing to split.
+  txn_type_breakdown: Record<string, { total: number; total_amount: number }> | null;
 }
 
 export interface RailMetric {

@@ -15,6 +15,22 @@ interface ChannelCardProps {
   history: HistoryPoint[];
 }
 
+function TypeBreakdownLine({ breakdown }: { breakdown: Record<string, { total: number; total_amount: number }> }) {
+  const entries = Object.entries(breakdown);
+  const total = entries.reduce((sum, [, v]) => sum + v.total, 0);
+  if (total === 0) return null;
+
+  return (
+    <div className="text-xs text-secondary flex flex-wrap gap-x-3 gap-y-0.5">
+      {entries.map(([type, v]) => (
+        <span key={type} className="capitalize">
+          {type}: {((v.total / total) * 100).toFixed(0)}%
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function ChannelCard({ metric, history }: ChannelCardProps) {
   const isBatch = BATCH_CHANNELS.includes(metric.channel);
 
@@ -120,6 +136,8 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
           </>
         )}
       </div>
+
+      {metric.txn_type_breakdown && <TypeBreakdownLine breakdown={metric.txn_type_breakdown} />}
 
       <Meter label="Reliability budget (30m)" pct={metric.error_budget_burn_pct} />
     </div>
