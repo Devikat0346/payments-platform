@@ -26,6 +26,8 @@ export interface ChannelMetric {
   p50_latency_ms: number | null;
   p95_latency_ms: number | null;
   p99_latency_ms: number | null;
+  total_amount: number;
+  failure_amount: number;
   slo_success_rate: number;
   slo_latency_p99_ms: number | null;
   error_budget_burn_pct: number;
@@ -38,6 +40,8 @@ export interface RailMetric {
   success: number;
   failure: number;
   success_rate: number | null;
+  total_amount: number;
+  failure_amount: number;
   slo_success_rate: number;
 }
 
@@ -49,6 +53,8 @@ export interface TxnTypeMetric {
   success: number;
   failure: number;
   success_rate: number | null;
+  total_amount: number;
+  failure_amount: number;
 }
 
 export interface MetricsSummary {

@@ -97,7 +97,18 @@ export default function Home() {
         ))}
       </section>
 
-      <footer className="mt-12 text-muted text-xs">
+      <section
+        className="mt-8 card p-4 text-xs text-secondary"
+        style={{ borderStyle: "dashed" }}
+      >
+        <strong style={{ color: "var(--text-primary)" }}>If a module above looks empty when you click in:</strong>{" "}
+        both live modules run on a free-tier host that sleeps after ~15 minutes of no traffic and
+        takes 30-60s to wake up on the first request after that — refresh once after a moment. Data
+        should always be flowing within a minute; if it still looks stuck longer than that, the
+        module itself may be down.
+      </section>
+
+      <footer className="mt-8 text-muted text-xs">
         Synthetic data, generated in-process for demonstration purposes. No real payment data is
         used or stored.
       </footer>

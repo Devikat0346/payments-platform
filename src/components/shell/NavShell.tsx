@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/incidents", label: "Incident Copilot" },
   { href: "/reconciliation", label: "Reconciliation" },
   { href: "/insights", label: "Business Insights" },
+  { href: "/about", label: "How this was built" },
 ];
 
 export function NavShell({ children }: { children: React.ReactNode }) {

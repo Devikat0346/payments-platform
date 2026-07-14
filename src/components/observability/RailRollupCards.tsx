@@ -1,12 +1,10 @@
+import { InfoTip } from "@/components/InfoTip";
 import { RAIL_LABELS, Rail } from "@/lib/channels";
+import { fmtPct } from "@/lib/format";
+import { JARGON } from "@/lib/glossary";
 import { RailMetric } from "@/lib/observability/types";
 
 const RAIL_ORDER: Rail[] = ["CARD", "WIRE", "ACH_BATCH", "ZELLE"];
-
-function fmtPct(v: number | null): string {
-  if (v === null || v === undefined) return "—";
-  return `${(v * 100).toFixed(1)}%`;
-}
 
 export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | undefined }) {
   return (
@@ -27,7 +25,11 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
               className="text-xs"
               style={{ color: belowSlo ? "var(--status-warning)" : "var(--text-secondary)" }}
             >
-              {m ? fmtPct(m.success_rate) : "—"} success · {m ? fmtPct(m.slo_success_rate) : "—"} SLO target
+              {m ? fmtPct(m.success_rate) : "—"} success ·{" "}
+              <span className="inline-flex items-center gap-1">
+                {m ? fmtPct(m.slo_success_rate) : "—"} SLO target
+                <InfoTip text={JARGON.slo} />
+              </span>
             </span>
           </div>
         );

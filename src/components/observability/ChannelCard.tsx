@@ -6,20 +6,11 @@ import { Meter } from "./Meter";
 import { HistoryPoint } from "@/lib/observability/useLiveData";
 import { ChannelMetric } from "@/lib/observability/types";
 import { BATCH_CHANNELS, CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
+import { fmtMs, fmtPct } from "@/lib/format";
 
 interface ChannelCardProps {
   metric: ChannelMetric;
   history: HistoryPoint[];
-}
-
-function fmtMs(v: number | null): string {
-  if (v === null || v === undefined) return "—";
-  return v >= 1000 ? `${(v / 1000).toFixed(2)}s` : `${v.toFixed(0)}ms`;
-}
-
-function fmtPct(v: number | null): string {
-  if (v === null || v === undefined) return "—";
-  return `${(v * 100).toFixed(1)}%`;
 }
 
 export function ChannelCard({ metric, history }: ChannelCardProps) {

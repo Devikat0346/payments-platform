@@ -1,4 +1,7 @@
+import { InfoTip } from "@/components/InfoTip";
 import { CHANNEL_LABELS } from "@/lib/channels";
+import { fmtMoney } from "@/lib/format";
+import { REASON_CODES } from "@/lib/glossary";
 import { Transaction } from "@/lib/observability/types";
 
 const STATUS_COLOR: Record<Transaction["status"], string> = {
@@ -10,10 +13,6 @@ const STATUS_COLOR: Record<Transaction["status"], string> = {
   failed: "var(--status-critical)",
   returned: "var(--status-serious)",
 };
-
-function fmtMoney(v: number): string {
-  return v.toLocaleString("en-US", { style: "currency", currency: "USD" });
-}
 
 export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
   return (
@@ -50,6 +49,19 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
                       aria-hidden
                     />
                     {txn.status}
+                    {(txn.decline_reason || txn.return_code) && (
+                      <>
+                        <span className="text-muted">
+                          ({txn.decline_reason ?? txn.return_code})
+                        </span>
+                        <InfoTip
+                          text={
+                            REASON_CODES[(txn.decline_reason ?? txn.return_code) as string] ??
+                            "Reason code from the processing system."
+                          }
+                        />
+                      </>
+                    )}
                   </span>
                 </td>
                 <td className="px-5 py-2 text-secondary" style={{ fontVariantNumeric: "tabular-nums" }}>

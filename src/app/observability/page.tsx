@@ -8,6 +8,8 @@ import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
 import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
+import { fmtCompactMoney } from "@/lib/format";
+import { JARGON } from "@/lib/glossary";
 
 const RAIL_CHANNEL_GROUPS: { rail: Rail; channels: Channel[] }[] = [
   { rail: "CARD", channels: ["pos", "ecommerce", "mobile_wallet"] },
@@ -27,6 +29,7 @@ export default function ObservabilityPage() {
   const worstBurn = channels.length
     ? Math.max(...channels.map((c) => c.error_budget_burn_pct))
     : 0;
+  const failedDollarVolume = channels.reduce((sum, c) => sum + c.failure_amount, 0);
 
   return (
     <div className="px-6 py-10 md:px-12 lg:px-20 max-w-[1400px] mx-auto">
@@ -50,7 +53,7 @@ export default function ObservabilityPage() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <section className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         <StatTile
           label="Transactions (5m window)"
           value={totalTxns.toLocaleString()}
@@ -61,6 +64,11 @@ export default function ObservabilityPage() {
           value={overallSuccessRate !== null ? `${(overallSuccessRate * 100).toFixed(2)}%` : "—"}
         />
         <StatTile
+          label="$ in failed/returned txns"
+          value={fmtCompactMoney(failedDollarVolume)}
+          sublabel="5m window — business impact"
+        />
+        <StatTile
           label="Active incidents"
           value={String(activeIncidentCount)}
           sublabel={activeIncidentCount ? "channels degraded" : "all clear"}
@@ -69,6 +77,7 @@ export default function ObservabilityPage() {
           label="Worst error-budget burn"
           value={`${worstBurn.toFixed(0)}%`}
           sublabel="30m rolling window"
+          tooltip={JARGON.errorBudgetBurn}
         />
       </section>
 

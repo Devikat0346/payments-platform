@@ -1,3 +1,6 @@
+import { InfoTip } from "@/components/InfoTip";
+import { JARGON } from "@/lib/glossary";
+
 interface MeterProps {
   label: string;
   pct: number; // error-budget burn, 0-100 nominal, can exceed 100
@@ -16,7 +19,10 @@ export function Meter({ label, pct }: MeterProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between text-xs">
-        <span className="text-secondary">{label}</span>
+        <span className="text-secondary inline-flex items-center gap-1">
+          {label}
+          <InfoTip text={JARGON.errorBudgetBurn} />
+        </span>
         <span className="text-secondary font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
           {pct.toFixed(0)}%
         </span>

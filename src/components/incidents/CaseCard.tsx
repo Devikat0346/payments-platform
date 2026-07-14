@@ -1,5 +1,6 @@
 import { ConfidenceBadge, SeverityBadge } from "./Badges";
 import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
+import { fmtCompactMoney } from "@/lib/format";
 import { IncidentCase } from "@/lib/incidents/types";
 
 function fmtSeconds(v: number | null): string {
@@ -8,6 +9,9 @@ function fmtSeconds(v: number | null): string {
 }
 
 export function CaseCard({ c }: { c: IncidentCase }) {
+  const failureAmount = c.metrics_snapshot?.failure_amount;
+  const dollarImpact = typeof failureAmount === "number" && failureAmount > 0 ? failureAmount : null;
+
   return (
     <div className="card p-5 flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2 flex-wrap">
@@ -55,8 +59,15 @@ export function CaseCard({ c }: { c: IncidentCase }) {
               </ul>
             </div>
           )}
-          <div className="text-xs text-muted pt-1 border-t" style={{ borderColor: "var(--gridline)" }}>
-            Time to insight: <span className="text-secondary font-medium">{fmtSeconds(c.time_to_insight_seconds)}</span>
+          <div className="text-xs text-muted pt-1 border-t flex flex-wrap gap-x-4 gap-y-1" style={{ borderColor: "var(--gridline)" }}>
+            <span>
+              Time to insight: <span className="text-secondary font-medium">{fmtSeconds(c.time_to_insight_seconds)}</span>
+            </span>
+            {dollarImpact && (
+              <span>
+                $ impact: <span className="text-secondary font-medium">{fmtCompactMoney(dollarImpact)}</span> in failed/returned transactions
+              </span>
+            )}
           </div>
         </>
       ) : (

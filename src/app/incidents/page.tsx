@@ -3,6 +3,7 @@
 import { CaseCard } from "@/components/incidents/CaseCard";
 import { RailBreakdown } from "@/components/incidents/RailBreakdown";
 import { StatTile } from "@/components/StatTile";
+import { JARGON } from "@/lib/glossary";
 import { useLiveCases } from "@/lib/incidents/useLiveCases";
 
 export default function IncidentsPage() {
@@ -38,6 +39,21 @@ export default function IncidentsPage() {
         </div>
       </header>
 
+      <div
+        className="flex items-center gap-2 text-xs rounded-md px-3 py-2 mb-8"
+        style={{
+          background: "color-mix(in srgb, var(--status-warning) 12%, transparent)",
+          color: "var(--text-secondary)",
+        }}
+      >
+        <span aria-hidden>⚠</span>
+        <span>
+          <strong className="font-medium" style={{ color: "var(--text-primary)" }}>AI-generated hypothesis, not verified.</strong>{" "}
+          Every diagnosis below is produced by an LLM reasoning over live telemetry — treat it as a
+          first-pass lead for a human on-call engineer, not a confirmed root cause.
+        </span>
+      </div>
+
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <StatTile label="Cases analyzed" value={String(cases.length)} />
         <StatTile label="Currently active" value={String(activeCases.length)} />
@@ -45,6 +61,7 @@ export default function IncidentsPage() {
           label="Avg. time to insight"
           value={avgTimeToInsight !== null ? `${avgTimeToInsight.toFixed(1)}s` : "—"}
           sublabel="detection → AI diagnosis"
+          tooltip={JARGON.timeToInsight}
         />
         <StatTile label="High severity" value={String(highSeverityCount)} />
       </section>
