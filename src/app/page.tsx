@@ -19,7 +19,7 @@ export default function Home() {
       href: "/observability",
       title: "Observability",
       description:
-        "Simulates credit, debit, and wire transactions across real-time and batch origination channels, with live SLIs, SLOs, and error-budget burn.",
+        "Simulates credit, debit, wire (digital, branch, LoanIQ, batch, IVR), ACH, and Zelle transactions across real-time and batch origination channels, with live SLIs, SLOs, and error-budget burn.",
       status: "live",
       statLine:
         status.channelsTotal !== null
@@ -58,9 +58,11 @@ export default function Home() {
         </h1>
         <p className="text-secondary">
           Every module below reads from the same underlying multi-channel transaction data —
-          credit, debit, and wire, across real-time and batch origination rails. It&apos;s one
-          system, not four demos: transactions flow in, get observed, get triaged by AI when
-          something breaks, and roll up into reconciliation and business reporting.
+          credit, debit, wire, ACH, and Zelle, across eleven distinct origination journeys (POS,
+          e-commerce, mobile wallet, digital/branch/LoanIQ/batch/IVR wire, ACH batch, and Zelle
+          mobile/online) spanning real-time and batch rails. It&apos;s one system, not four demos:
+          transactions flow in, get observed, get triaged by AI when something breaks, and roll up
+          into reconciliation and business reporting.
         </p>
       </section>
 

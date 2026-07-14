@@ -1,6 +1,7 @@
 "use client";
 
 import { CaseCard } from "@/components/incidents/CaseCard";
+import { RailBreakdown } from "@/components/incidents/RailBreakdown";
 import { StatTile } from "@/components/StatTile";
 import { useLiveCases } from "@/lib/incidents/useLiveCases";
 
@@ -21,9 +22,10 @@ export default function IncidentsPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">AI Payments Incident Copilot</h1>
           <p className="text-secondary text-sm mt-1">
-            Watches the observability module&apos;s live telemetry, and uses an LLM to
-            independently diagnose likely root cause the moment a channel degrades — without ever
-            being told what the injected fault actually was.
+            Watches telemetry across every rail — card, wire (including LoanIQ, batch, and
+            IVR-originated wires), ACH, and Zelle — and uses an LLM to independently diagnose
+            likely root cause the moment a channel degrades, without ever being told what the
+            injected fault actually was.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm shrink-0">
@@ -45,6 +47,10 @@ export default function IncidentsPage() {
           sublabel="detection → AI diagnosis"
         />
         <StatTile label="High severity" value={String(highSeverityCount)} />
+      </section>
+
+      <section className="mb-8">
+        <RailBreakdown cases={cases} />
       </section>
 
       <section className="flex flex-col gap-4">

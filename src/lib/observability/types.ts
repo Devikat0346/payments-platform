@@ -41,17 +41,28 @@ export interface RailMetric {
   slo_success_rate: number;
 }
 
+export type TxnType = "credit" | "debit" | "wire" | "zelle";
+
+export interface TxnTypeMetric {
+  txn_type: TxnType;
+  total: number;
+  success: number;
+  failure: number;
+  success_rate: number | null;
+}
+
 export interface MetricsSummary {
   generated_at: string;
   channels: Record<Channel, ChannelMetric>;
   rails: Record<Rail, RailMetric>;
+  txn_types: Record<TxnType, TxnTypeMetric>;
 }
 
 export interface Transaction {
   id: string;
   rail: Rail;
   channel: Channel;
-  txn_type: "credit" | "debit" | "wire";
+  txn_type: TxnType;
   amount: number;
   status:
     | "initiated"

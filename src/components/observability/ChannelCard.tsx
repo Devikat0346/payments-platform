@@ -5,7 +5,7 @@ import { HealthBadge } from "./HealthBadge";
 import { Meter } from "./Meter";
 import { HistoryPoint } from "@/lib/observability/useLiveData";
 import { ChannelMetric } from "@/lib/observability/types";
-import { CHANNEL_LABELS, RAIL_LABELS } from "@/lib/channels";
+import { CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
 
 interface ChannelCardProps {
   metric: ChannelMetric;
@@ -30,7 +30,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h3 className="font-semibold leading-tight">{CHANNEL_LABELS[metric.channel]}</h3>
-          <p className="text-muted text-xs">{RAIL_LABELS[metric.rail]}</p>
+          <p className="text-muted text-xs">{CHANNEL_ORIGIN_DESCRIPTIONS[metric.channel]}</p>
         </div>
         <HealthBadge health={metric.health} />
       </div>

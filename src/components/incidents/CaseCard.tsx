@@ -1,5 +1,5 @@
 import { ConfidenceBadge, SeverityBadge } from "./Badges";
-import { CHANNEL_LABELS, Channel } from "@/lib/channels";
+import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
 import { IncidentCase } from "@/lib/incidents/types";
 
 function fmtSeconds(v: number | null): string {
@@ -14,7 +14,7 @@ export function CaseCard({ c }: { c: IncidentCase }) {
         <div>
           <h3 className="font-semibold">{CHANNEL_LABELS[c.channel as Channel] ?? c.channel}</h3>
           <p className="text-muted text-xs">
-            Detected {new Date(c.detected_at).toLocaleString()}
+            {RAIL_LABELS[c.rail as Rail] ?? c.rail} · Detected {new Date(c.detected_at).toLocaleString()}
             {c.resolved_at && ` · resolved ${new Date(c.resolved_at).toLocaleTimeString()}`}
           </p>
         </div>

@@ -3,17 +3,17 @@
 import { ChannelCard } from "@/components/observability/ChannelCard";
 import { IncidentBanner } from "@/components/observability/IncidentBanner";
 import { LiveFeed } from "@/components/observability/LiveFeed";
+import { RailRollupCards } from "@/components/observability/RailRollupCards";
+import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
-import { CHANNEL_LABELS, Channel } from "@/lib/channels";
+import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
 
-const CHANNEL_ORDER: Channel[] = [
-  "pos",
-  "ecommerce",
-  "mobile_wallet",
-  "wire_online",
-  "wire_branch",
-  "ach_batch_file",
+const RAIL_CHANNEL_GROUPS: { rail: Rail; channels: Channel[] }[] = [
+  { rail: "CARD", channels: ["pos", "ecommerce", "mobile_wallet"] },
+  { rail: "WIRE", channels: ["wire_online", "wire_branch", "wire_loaniq", "wire_batch", "wire_ivr"] },
+  { rail: "ACH_BATCH", channels: ["ach_batch_file"] },
+  { rail: "ZELLE", channels: ["zelle_mobile", "zelle_online"] },
 ];
 
 export default function ObservabilityPage() {
@@ -36,8 +36,8 @@ export default function ObservabilityPage() {
             Multi-Rail Payments Observability
           </h1>
           <p className="text-secondary text-sm mt-1">
-            Simulated credit, debit &amp; wire transactions across real-time and batch origination
-            channels — with live SLIs, SLOs, and error-budget tracking.
+            Simulated credit, debit, wire &amp; Zelle transactions across real-time and batch
+            origination channels — with live SLIs, SLOs, and error-budget tracking.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm shrink-0">
@@ -78,24 +78,38 @@ export default function ObservabilityPage() {
 
       <section className="mb-8">
         <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">
-          Channels &amp; rails
+          Rails &amp; transaction types
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {CHANNEL_ORDER.map((channel) => {
-            const metric = metrics?.channels[channel];
-            if (!metric) {
-              return (
-                <div key={channel} className="card p-5 text-muted text-sm">
-                  {CHANNEL_LABELS[channel]} — collecting data…
-                </div>
-              );
-            }
-            return (
-              <ChannelCard key={channel} metric={metric} history={history[channel] ?? []} />
-            );
-          })}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div className="xl:col-span-2">
+            <RailRollupCards rails={metrics?.rails} />
+          </div>
+          <TxnTypeMix txnTypes={metrics?.txn_types} />
         </div>
       </section>
+
+      {RAIL_CHANNEL_GROUPS.map((group) => (
+        <section key={group.rail} className="mb-8">
+          <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">
+            {RAIL_LABELS[group.rail]} — origination channels
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {group.channels.map((channel) => {
+              const metric = metrics?.channels[channel];
+              if (!metric) {
+                return (
+                  <div key={channel} className="card p-5 text-muted text-sm">
+                    {CHANNEL_LABELS[channel]} — collecting data…
+                  </div>
+                );
+              }
+              return (
+                <ChannelCard key={channel} metric={metric} history={history[channel] ?? []} />
+              );
+            })}
+          </div>
+        </section>
+      ))}
 
       <section>
         <LiveFeed transactions={feed} />
