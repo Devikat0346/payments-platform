@@ -31,6 +31,15 @@ export interface ChannelMetric {
   slo_success_rate: number;
   slo_latency_p99_ms: number | null;
   error_budget_burn_pct: number;
+  // Availability is a different axis from success_rate/error_budget_burn_pct:
+  // did the platform return a decision at all (approved or declined), vs. a
+  // genuine technical failure (timeout, internal error) where it didn't. A
+  // channel can be fully within its approval-rate SLA while still burning
+  // availability budget, or vice versa.
+  technical_failures: number;
+  availability: number | null;
+  availability_slo_target: number;
+  availability_burn_pct: number;
   active_incident: Incident | null;
   // Present only for channels that can be more than one transaction type (card
   // and ACH channels) — e.g. { credit: {...}, debit: {...} }. null for channels
@@ -47,6 +56,7 @@ export interface RailMetric {
   total_amount: number;
   failure_amount: number;
   slo_success_rate: number;
+  availability_slo_target: number;
 }
 
 // The raw per-transaction type — what a single transaction actually is.
@@ -102,4 +112,5 @@ export interface Transaction {
   batch_id: string | null;
   decline_reason: string | null;
   return_code: string | null;
+  technical_failure_reason: string | null;
 }

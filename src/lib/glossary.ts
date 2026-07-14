@@ -11,6 +11,10 @@ export const JARGON: Record<string, string> = {
     "How long after a problem was detected the AI took to produce a diagnosis — this platform's stand-in for MTTD in an AI-assisted workflow.",
   typicalSpeed: "The middle transaction — half of all transactions were faster than this, half were slower. Technically called 'p50 latency.'",
   slowestCases: "How slow the worst 1% of transactions were. A few slow outliers can hurt real customers even when the typical case looks fine. Technically called 'p99 latency.'",
+  platformAvailability:
+    "Did the platform return a decision at all — approved or declined — without erroring or timing out? This is different from the approval rate: a card declined for insufficient funds is the system working correctly, not an availability problem. Target is 'five nines' (99.999%) across every rail, since this is an infrastructure commitment, not a business outcome.",
+  approvalRate:
+    "Of the transactions the platform actually processed, how many were approved? This includes expected business declines (fraud holds, insufficient funds, compliance holds) — a high decline rate here can be completely normal and by design, unlike an availability miss.",
 };
 
 export const REASON_CODES: Record<string, string> = {
@@ -38,4 +42,11 @@ export const REASON_CODES: Record<string, string> = {
   duplicate_wire_reference: "This wire's reference number was already used in a prior batch.",
   insufficient_funds_at_settlement: "Funds were available when submitted but not by the time the batch settled.",
   FILE_REJECTED: "The entire batch file was rejected before any individual item was processed.",
+  // Technical/system failures — these are availability misses, not business
+  // declines. Kept in the same lookup since the UI shows them the same way
+  // (a reason code next to a transaction), but they mean something different.
+  gateway_timeout: "The system never got a response from the processing gateway in time. A genuine technical failure, not a business decline.",
+  internal_error: "An unexpected internal error prevented the platform from reaching a decision. A genuine technical failure, not a business decline.",
+  downstream_unavailable: "A required downstream service was unavailable when this transaction was processed. A genuine technical failure, not a business decline.",
+  file_rejected: "The whole batch file was rejected before processing — a technical/operational failure, not a business decision on any individual item.",
 };

@@ -49,18 +49,39 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
                       aria-hidden
                     />
                     {txn.status}
-                    {(txn.decline_reason || txn.return_code) && (
+                    {txn.technical_failure_reason ? (
                       <>
-                        <span className="text-muted">
-                          ({txn.decline_reason ?? txn.return_code})
+                        <span
+                          className="text-xs font-medium px-1.5 rounded"
+                          style={{
+                            background: "color-mix(in srgb, var(--status-critical) 15%, transparent)",
+                            color: "var(--status-critical)",
+                          }}
+                        >
+                          system
                         </span>
+                        <span className="text-muted">({txn.technical_failure_reason})</span>
                         <InfoTip
                           text={
-                            REASON_CODES[(txn.decline_reason ?? txn.return_code) as string] ??
-                            "Reason code from the processing system."
+                            REASON_CODES[txn.technical_failure_reason] ??
+                            "A genuine system/technical failure, not a business decline."
                           }
                         />
                       </>
+                    ) : (
+                      (txn.decline_reason || txn.return_code) && (
+                        <>
+                          <span className="text-muted">
+                            ({txn.decline_reason ?? txn.return_code})
+                          </span>
+                          <InfoTip
+                            text={
+                              REASON_CODES[(txn.decline_reason ?? txn.return_code) as string] ??
+                              "Reason code from the processing system."
+                            }
+                          />
+                        </>
+                      )
                     )}
                   </span>
                 </td>

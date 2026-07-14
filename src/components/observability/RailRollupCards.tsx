@@ -37,6 +37,10 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
                 <InfoTip text={JARGON.slo} />
               </span>
             </span>
+            <span className="text-xs text-muted inline-flex items-center gap-1">
+              Availability target: {m ? fmtPct(m.availability_slo_target) : "—"}
+              <InfoTip text={JARGON.platformAvailability} />
+            </span>
           </div>
         );
       })}

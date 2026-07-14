@@ -32,6 +32,8 @@ export default function ObservabilityPage() {
   const totalDollarVolume = channels.reduce((sum, c) => sum + c.total_amount, 0);
   const failedDollarVolume = channels.reduce((sum, c) => sum + c.failure_amount, 0);
   const failedVolumeShare = fmtVolumeShare(failedDollarVolume, totalDollarVolume);
+  const totalTechnicalFailures = channels.reduce((sum, c) => sum + c.technical_failures, 0);
+  const platformAvailability = totalTxns > 0 ? (totalTxns - totalTechnicalFailures) / totalTxns : null;
 
   return (
     <div className="px-6 py-10 md:px-12 lg:px-20 max-w-[1400px] mx-auto">
@@ -42,7 +44,9 @@ export default function ObservabilityPage() {
           </h1>
           <p className="text-secondary text-sm mt-1">
             Simulated credit, debit, wire &amp; Zelle transactions across real-time and batch
-            origination channels — with live SLIs, SLOs, and error-budget tracking.
+            origination channels — with live SLIs, SLOs, and error-budget tracking. Every rail
+            carries a five-nines (99.999%) platform availability target, tracked separately from
+            each rail&apos;s own approval-rate SLA.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm shrink-0">
@@ -55,7 +59,7 @@ export default function ObservabilityPage() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatTile
           label="Transactions (5m window)"
           value={totalTxns.toLocaleString()}
@@ -67,8 +71,15 @@ export default function ObservabilityPage() {
           sublabel="5m window, all channels"
         />
         <StatTile
-          label="Overall success rate"
+          label="Platform availability"
+          value={platformAvailability !== null ? fmtPct(platformAvailability) : "—"}
+          sublabel="Target: 99.999% (5 nines)"
+          tooltip={JARGON.platformAvailability}
+        />
+        <StatTile
+          label="Overall approval rate"
           value={overallSuccessRate !== null ? `${(overallSuccessRate * 100).toFixed(2)}%` : "—"}
+          tooltip={JARGON.approvalRate}
         />
         <StatTile
           label="Dollars in failed payments"
@@ -81,14 +92,14 @@ export default function ObservabilityPage() {
           sublabel={activeIncidentCount ? "channels degraded" : "all clear"}
         />
         <StatTile
-          label="Biggest reliability miss"
+          label="Biggest approval-rate miss"
           value={worstChannel && worstChannel.error_budget_burn_pct > 0 ? fmtBudgetBurn(worstChannel.error_budget_burn_pct) : "None"}
           sublabel={
             worstChannel && worstChannel.error_budget_burn_pct > 0
               ? `${CHANNEL_LABELS[worstChannel.channel]} · SLA: ${fmtPct(worstChannel.slo_success_rate)}`
               : "all within target"
           }
-          tooltip={JARGON.errorBudgetBurn}
+          tooltip={JARGON.approvalRate}
         />
       </section>
 

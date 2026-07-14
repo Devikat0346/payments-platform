@@ -140,9 +140,19 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
       {metric.txn_type_breakdown && <TypeBreakdownLine breakdown={metric.txn_type_breakdown} />}
 
       <Meter
-        label="Reliability budget (30m)"
+        label="Platform availability (30m)"
+        pct={metric.availability_burn_pct}
+        tooltip={JARGON.platformAvailability}
+        sloTarget={metric.availability_slo_target}
+        sloLabel="Target (5 nines)"
+      />
+
+      <Meter
+        label="Approval-rate budget (30m)"
         pct={metric.error_budget_burn_pct}
+        tooltip={JARGON.approvalRate}
         sloTarget={metric.slo_success_rate}
+        sloLabel="Agreed SLA"
       />
     </div>
   );
