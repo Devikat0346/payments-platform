@@ -17,7 +17,12 @@ const STATUS_COLOR: Record<Transaction["status"], string> = {
 export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+      <div className="px-5 py-4 border-b flex items-center gap-2" style={{ borderColor: "var(--border)" }}>
+        <span
+          className="inline-block w-1.5 h-1.5 rounded-full"
+          style={{ background: "var(--status-good)" }}
+          aria-hidden
+        />
         <h3 className="font-semibold">Live transaction feed</h3>
       </div>
       <div className="max-h-96 overflow-y-auto">
@@ -32,8 +37,15 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
             </tr>
           </thead>
           <tbody>
-            {transactions.slice(0, 30).map((txn) => (
-              <tr key={`${txn.id}-${txn.status}`} className="border-t" style={{ borderColor: "var(--gridline)" }}>
+            {transactions.slice(0, 30).map((txn, i) => (
+              <tr
+                key={`${txn.id}-${txn.status}`}
+                className="border-t"
+                style={{
+                  borderColor: "var(--gridline)",
+                  background: i % 2 === 1 ? "color-mix(in srgb, var(--text-primary) 2%, transparent)" : "transparent",
+                }}
+              >
                 <td className="px-5 py-2 text-muted" style={{ fontVariantNumeric: "tabular-nums" }}>
                   {new Date(txn.updated_at).toLocaleTimeString()}
                 </td>

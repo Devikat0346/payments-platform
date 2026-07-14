@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertTriangle, Clock, Flame, ListChecks } from "lucide-react";
 import { CaseCard } from "@/components/incidents/CaseCard";
 import { RailBreakdown } from "@/components/incidents/RailBreakdown";
 import { StatTile } from "@/components/StatTile";
@@ -29,24 +30,32 @@ export default function IncidentsPage() {
             injected fault actually was.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm shrink-0">
+        <div
+          className="badge shrink-0"
+          style={{
+            background: connected
+              ? "color-mix(in srgb, var(--status-good) 14%, transparent)"
+              : "color-mix(in srgb, var(--status-critical) 14%, transparent)",
+            color: connected ? "var(--status-good)" : "var(--status-critical)",
+          }}
+        >
           <span
-            className="inline-block w-2 h-2 rounded-full"
+            className="inline-block w-1.5 h-1.5 rounded-full"
             style={{ background: connected ? "var(--status-good)" : "var(--status-critical)" }}
             aria-hidden
           />
-          <span className="text-secondary">{connected ? "Live" : "Reconnecting…"}</span>
+          {connected ? "Live" : "Reconnecting…"}
         </div>
       </header>
 
       <div
-        className="flex items-center gap-2 text-xs rounded-md px-3 py-2 mb-8"
+        className="flex items-center gap-2.5 text-xs rounded-md px-3 py-2.5 mb-8"
         style={{
           background: "color-mix(in srgb, var(--status-warning) 12%, transparent)",
           color: "var(--text-secondary)",
         }}
       >
-        <span aria-hidden>⚠</span>
+        <AlertTriangle size={15} strokeWidth={2} style={{ color: "var(--status-warning)" }} className="shrink-0" />
         <span>
           <strong className="font-medium" style={{ color: "var(--text-primary)" }}>AI-generated hypothesis, not verified.</strong>{" "}
           Every diagnosis below is produced by an LLM reasoning over live telemetry — treat it as a
@@ -55,15 +64,16 @@ export default function IncidentsPage() {
       </div>
 
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatTile label="Cases analyzed" value={String(cases.length)} />
-        <StatTile label="Currently active" value={String(activeCases.length)} />
+        <StatTile label="Cases analyzed" value={String(cases.length)} icon={ListChecks} />
+        <StatTile label="Currently active" value={String(activeCases.length)} icon={Flame} />
         <StatTile
           label="Avg. time to insight"
           value={avgTimeToInsight !== null ? `${avgTimeToInsight.toFixed(1)}s` : "—"}
           sublabel="detection → AI diagnosis"
           tooltip={JARGON.timeToInsight}
+          icon={Clock}
         />
-        <StatTile label="High severity" value={String(highSeverityCount)} />
+        <StatTile label="High severity" value={String(highSeverityCount)} icon={AlertTriangle} />
       </section>
 
       <section className="mb-8">

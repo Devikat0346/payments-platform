@@ -22,7 +22,12 @@ export function NavShell({ children }: { children: React.ReactNode }) {
         style={{ borderColor: "var(--border)", background: "color-mix(in srgb, var(--surface-page) 85%, transparent)" }}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 h-14 flex items-center gap-6">
-          <Link href="/" className="font-semibold tracking-tight shrink-0">
+          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight shrink-0">
+            <span
+              className="inline-block w-2 h-2 rounded-sm"
+              style={{ background: "var(--accent)" }}
+              aria-hidden
+            />
             Payments Platform
           </Link>
           <nav className="flex items-center gap-1 overflow-x-auto">
@@ -32,11 +37,12 @@ export function NavShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors"
+                  className={`text-sm px-3 py-1.5 rounded-full whitespace-nowrap transition-colors font-medium ${
+                    active ? "" : "hover:bg-[var(--border)]"
+                  }`}
                   style={{
-                    color: active ? "var(--text-primary)" : "var(--text-secondary)",
-                    background: active ? "var(--surface-card)" : "transparent",
-                    border: active ? "1px solid var(--border)" : "1px solid transparent",
+                    color: active ? "var(--accent-fg)" : "var(--text-secondary)",
+                    background: active ? "var(--accent)" : "transparent",
                   }}
                 >
                   {item.label}

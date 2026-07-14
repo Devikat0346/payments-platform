@@ -1,14 +1,22 @@
 "use client";
 
+import { ArrowLeftRight, CreditCard, Landmark, Smartphone, type LucideIcon } from "lucide-react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
 import { HealthBadge } from "./HealthBadge";
 import { Meter } from "./Meter";
 import { InfoTip } from "@/components/InfoTip";
 import { HistoryPoint } from "@/lib/observability/useLiveData";
 import { ChannelMetric } from "@/lib/observability/types";
-import { BATCH_CHANNELS, CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
+import { BATCH_CHANNELS, CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS, Rail } from "@/lib/channels";
 import { fmtMs, fmtPct } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
+
+const RAIL_ICON: Record<Rail, LucideIcon> = {
+  CARD: CreditCard,
+  WIRE: ArrowLeftRight,
+  ACH_BATCH: Landmark,
+  ZELLE: Smartphone,
+};
 
 interface ChannelCardProps {
   metric: ChannelMetric;
@@ -33,17 +41,24 @@ function TypeBreakdownLine({ breakdown }: { breakdown: Record<string, { total: n
 
 export function ChannelCard({ metric, history }: ChannelCardProps) {
   const isBatch = BATCH_CHANNELS.includes(metric.channel);
+  const RailIcon = RAIL_ICON[metric.rail];
 
   const chartData = isBatch
     ? history.map((h) => ({ t: h.t, value: h.successRate !== null ? h.successRate * 100 : null }))
     : history.map((h) => ({ t: h.t, value: h.p50 }));
+  const chartPointCount = chartData.filter((d) => d.value !== null).length;
 
   return (
-    <div className="card p-5 flex flex-col gap-4">
+    <div className="card card-interactive p-5 flex flex-col gap-4">
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className="font-semibold leading-tight">{CHANNEL_LABELS[metric.channel]}</h3>
-          <p className="text-muted text-xs">{CHANNEL_ORIGIN_DESCRIPTIONS[metric.channel]}</p>
+        <div className="flex items-start gap-3">
+          <span className="icon-tile mt-0.5">
+            <RailIcon size={16} strokeWidth={2} />
+          </span>
+          <div>
+            <h3 className="font-semibold leading-tight">{CHANNEL_LABELS[metric.channel]}</h3>
+            <p className="text-muted text-xs">{CHANNEL_ORIGIN_DESCRIPTIONS[metric.channel]}</p>
+          </div>
         </div>
         <HealthBadge health={metric.health} />
       </div>
@@ -58,7 +73,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
       )}
 
       <div className="h-14 -mx-1">
-        {chartData.some((d) => d.value !== null) ? (
+        {chartPointCount >= 2 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
               <YAxis hide domain={["auto", "auto"]} />

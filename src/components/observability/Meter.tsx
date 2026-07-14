@@ -20,7 +20,7 @@ interface MeterProps {
 function severityColor(pct: number): string {
   if (pct >= 100) return "var(--status-critical)";
   if (pct >= 70) return "var(--status-warning)";
-  return "var(--seq-blue-450)";
+  return "var(--accent)";
 }
 
 export function Meter({
@@ -47,15 +47,12 @@ export function Meter({
           {countContext && <span className="text-muted font-normal"> ({countContext})</span>}
         </span>
       </div>
-      <div
-        className="h-2 rounded-full overflow-hidden"
-        style={{ background: "var(--seq-blue-300)", opacity: 0.25 }}
-      >
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${display}%`, background: color }}
+        />
       </div>
-      <div
-        className="h-2 rounded-full -mt-2 transition-all duration-500"
-        style={{ width: `${display}%`, background: color }}
-      />
       {sloTarget !== undefined && (
         <span className="text-muted text-xs">
           {sloLabel}: {sloTargetPrecise ? fmtPctPrecise(sloTarget) : fmtPct(sloTarget)}

@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  Activity,
+  AlertTriangle,
+  ArrowDownRight,
+  Banknote,
+  CircleGauge,
+  ShieldCheck,
+  TrendingDown,
+} from "lucide-react";
 import { ChannelCard } from "@/components/observability/ChannelCard";
 import { IncidentBanner } from "@/components/observability/IncidentBanner";
 import { LiveFeed } from "@/components/observability/LiveFeed";
@@ -49,13 +58,21 @@ export default function ObservabilityPage() {
             each rail&apos;s own approval-rate SLA.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm shrink-0">
+        <div
+          className="badge shrink-0"
+          style={{
+            background: connected
+              ? "color-mix(in srgb, var(--status-good) 14%, transparent)"
+              : "color-mix(in srgb, var(--status-critical) 14%, transparent)",
+            color: connected ? "var(--status-good)" : "var(--status-critical)",
+          }}
+        >
           <span
-            className="inline-block w-2 h-2 rounded-full"
+            className="inline-block w-1.5 h-1.5 rounded-full"
             style={{ background: connected ? "var(--status-good)" : "var(--status-critical)" }}
             aria-hidden
           />
-          <span className="text-secondary">{connected ? "Live" : "Reconnecting…"}</span>
+          {connected ? "Live" : "Reconnecting…"}
         </div>
       </header>
 
@@ -64,32 +81,38 @@ export default function ObservabilityPage() {
           label="Transactions (5m window)"
           value={totalTxns.toLocaleString()}
           sublabel="across all channels"
+          icon={Activity}
         />
         <StatTile
           label="Total volume processed"
           value={fmtCompactMoney(totalDollarVolume)}
           sublabel="5m window, all channels"
+          icon={Banknote}
         />
         <StatTile
           label="Platform availability"
           value={platformAvailability !== null ? fmtPctPrecise(platformAvailability) : "—"}
           sublabel="Target: 99.999% (5 nines)"
           tooltip={JARGON.platformAvailability}
+          icon={ShieldCheck}
         />
         <StatTile
           label="Overall approval rate"
           value={overallSuccessRate !== null ? `${(overallSuccessRate * 100).toFixed(2)}%` : "—"}
           tooltip={JARGON.approvalRate}
+          icon={CircleGauge}
         />
         <StatTile
           label="Dollars in failed payments"
           value={fmtCompactMoney(failedDollarVolume)}
           sublabel={failedVolumeShare ? `${failedVolumeShare} of the total above` : "5m window"}
+          icon={ArrowDownRight}
         />
         <StatTile
           label="Active incidents"
           value={String(activeIncidentCount)}
           sublabel={activeIncidentCount ? "channels degraded" : "all clear"}
+          icon={AlertTriangle}
         />
         <StatTile
           label="Biggest approval-rate miss"
@@ -100,6 +123,7 @@ export default function ObservabilityPage() {
               : "all within target"
           }
           tooltip={JARGON.approvalRate}
+          icon={TrendingDown}
         />
       </section>
 
@@ -108,9 +132,7 @@ export default function ObservabilityPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">
-          Rails &amp; transaction types
-        </h2>
+        <h2 className="section-label mb-3">Rails &amp; transaction types</h2>
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
           <div className="xl:col-span-2">
             <RailRollupCards rails={metrics?.rails} />
@@ -122,10 +144,10 @@ export default function ObservabilityPage() {
       {RAIL_CHANNEL_GROUPS.map((group) => (
         <section key={group.rail} className="mb-8">
           <div className="mb-3">
-            <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide">
+            <h2 className="section-label">
               {RAIL_LABELS[group.rail]} — origination channels
             </h2>
-            <p className="text-muted text-xs mt-0.5 max-w-2xl">{RAIL_EXPLAINERS[group.rail]}</p>
+            <p className="text-muted text-xs mt-1.5 max-w-2xl">{RAIL_EXPLAINERS[group.rail]}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {group.channels.map((channel) => {
