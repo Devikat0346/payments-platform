@@ -139,7 +139,11 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
 
       {metric.txn_type_breakdown && <TypeBreakdownLine breakdown={metric.txn_type_breakdown} />}
 
-      <Meter label="Reliability budget (30m)" pct={metric.error_budget_burn_pct} />
+      <Meter
+        label="Reliability budget (30m)"
+        pct={metric.error_budget_burn_pct}
+        sloTarget={metric.slo_success_rate}
+      />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
 import { CHANNEL_LABELS, Channel, RAIL_EXPLAINERS, RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtBudgetBurn, fmtCompactMoney, fmtVolumeShare } from "@/lib/format";
+import { fmtBudgetBurn, fmtCompactMoney, fmtPct, fmtVolumeShare } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 
 const RAIL_CHANNEL_GROUPS: { rail: Rail; channels: Channel[] }[] = [
@@ -83,7 +83,11 @@ export default function ObservabilityPage() {
         <StatTile
           label="Biggest reliability miss"
           value={worstChannel && worstChannel.error_budget_burn_pct > 0 ? fmtBudgetBurn(worstChannel.error_budget_burn_pct) : "None"}
-          sublabel={worstChannel && worstChannel.error_budget_burn_pct > 0 ? CHANNEL_LABELS[worstChannel.channel] : "all within target"}
+          sublabel={
+            worstChannel && worstChannel.error_budget_burn_pct > 0
+              ? `${CHANNEL_LABELS[worstChannel.channel]} · SLA: ${fmtPct(worstChannel.slo_success_rate)}`
+              : "all within target"
+          }
           tooltip={JARGON.errorBudgetBurn}
         />
       </section>

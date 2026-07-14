@@ -33,7 +33,7 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
             >
               {m ? fmtPct(m.success_rate) : "—"} success ·{" "}
               <span className="inline-flex items-center gap-1">
-                {m ? fmtPct(m.slo_success_rate) : "—"} SLO target
+                {m ? fmtPct(m.slo_success_rate) : "—"} SLA
                 <InfoTip text={JARGON.slo} />
               </span>
             </span>

@@ -1,6 +1,6 @@
 import { ConfidenceBadge, SeverityBadge } from "./Badges";
 import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtCompactMoney } from "@/lib/format";
+import { fmtCompactMoney, fmtPct } from "@/lib/format";
 import { IncidentCase } from "@/lib/incidents/types";
 
 function fmtSeconds(v: number | null): string {
@@ -11,6 +11,8 @@ function fmtSeconds(v: number | null): string {
 export function CaseCard({ c }: { c: IncidentCase }) {
   const failureAmount = c.metrics_snapshot?.failure_amount;
   const dollarImpact = typeof failureAmount === "number" && failureAmount > 0 ? failureAmount : null;
+  const sloTarget = c.metrics_snapshot?.slo_success_rate;
+  const actualSuccessRate = c.metrics_snapshot?.success_rate;
 
   return (
     <div className="card p-5 flex flex-col gap-3">
@@ -37,6 +39,21 @@ export function CaseCard({ c }: { c: IncidentCase }) {
           <ConfidenceBadge confidence={c.confidence} />
         </div>
       </div>
+
+      {typeof sloTarget === "number" && (
+        <div className="text-xs text-secondary">
+          Agreed SLA: <span className="font-medium">{fmtPct(sloTarget)} success</span>
+          {typeof actualSuccessRate === "number" && (
+            <>
+              {" "}
+              · Actual:{" "}
+              <span className="font-medium" style={{ color: "var(--status-critical)" }}>
+                {fmtPct(actualSuccessRate)}
+              </span>
+            </>
+          )}
+        </div>
+      )}
 
       {c.analysis_error ? (
         <p className="text-sm" style={{ color: "var(--status-critical)" }}>
