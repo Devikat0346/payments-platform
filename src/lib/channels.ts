@@ -46,15 +46,28 @@ export const CHANNEL_ORIGIN_DESCRIPTIONS: Record<Channel, string> = {
 export const BATCH_CHANNELS: Channel[] = ["ach_batch_file", "wire_batch"];
 
 export const RAIL_LABELS: Record<Rail, string> = {
-  CARD: "Card (Credit/Debit)",
+  CARD: "Card Network",
   WIRE: "Wire Transfer",
-  ACH_BATCH: "ACH Batch",
+  ACH_BATCH: "ACH Network",
   ZELLE: "Zelle (P2P)",
 };
 
+// What actually distinguishes each rail — the network/settlement mechanism, not
+// just "it's a payment." ACH is *also* credit-or-debit under the hood (that's
+// what the type-mix chart's ach_credit/ach_debit split is showing) — it's a
+// different rail from cards, not a different category of credit/debit.
+export const RAIL_EXPLAINERS: Record<Rail, string> = {
+  CARD: "Settled via card networks (Visa/Mastercard-style rails). Each transaction is run as either credit or debit.",
+  WIRE: "Bank-to-bank transfer, settled individually (often near-real-time), not categorized as credit or debit — it's its own settlement type.",
+  ACH_BATCH: "Bank-to-bank transfers settled via the ACH network in batches rather than the card networks. Also either credit (a deposit, e.g. payroll) or debit (a pull, e.g. bill pay) — just a different rail than cards.",
+  ZELLE: "Peer-to-peer instant payment network, settled directly bank-to-bank — its own rail, not credit, debit, wire, or ACH.",
+};
+
 export const TXN_TYPE_LABELS: Record<string, string> = {
-  credit: "Credit",
-  debit: "Debit",
+  card_credit: "Card — Credit",
+  card_debit: "Card — Debit",
+  ach_credit: "ACH — Credit",
+  ach_debit: "ACH — Debit",
   wire: "Wire",
   zelle: "Zelle",
 };

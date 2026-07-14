@@ -7,7 +7,7 @@ import { RailRollupCards } from "@/components/observability/RailRollupCards";
 import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
-import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
+import { CHANNEL_LABELS, Channel, RAIL_EXPLAINERS, RAIL_LABELS, Rail } from "@/lib/channels";
 import { fmtBudgetBurn, fmtCompactMoney, fmtVolumeShare } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 
@@ -55,11 +55,16 @@ export default function ObservabilityPage() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <section className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         <StatTile
           label="Transactions (5m window)"
           value={totalTxns.toLocaleString()}
           sublabel="across all channels"
+        />
+        <StatTile
+          label="Total volume processed"
+          value={fmtCompactMoney(totalDollarVolume)}
+          sublabel="5m window, all channels"
         />
         <StatTile
           label="Overall success rate"
@@ -68,7 +73,7 @@ export default function ObservabilityPage() {
         <StatTile
           label="Dollars in failed payments"
           value={fmtCompactMoney(failedDollarVolume)}
-          sublabel={failedVolumeShare ? `${failedVolumeShare} (5m)` : "5m window"}
+          sublabel={failedVolumeShare ? `${failedVolumeShare} of the total above` : "5m window"}
         />
         <StatTile
           label="Active incidents"
@@ -101,9 +106,12 @@ export default function ObservabilityPage() {
 
       {RAIL_CHANNEL_GROUPS.map((group) => (
         <section key={group.rail} className="mb-8">
-          <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide mb-3">
-            {RAIL_LABELS[group.rail]} — origination channels
-          </h2>
+          <div className="mb-3">
+            <h2 className="text-sm font-semibold text-secondary uppercase tracking-wide">
+              {RAIL_LABELS[group.rail]} — origination channels
+            </h2>
+            <p className="text-muted text-xs mt-0.5 max-w-2xl">{RAIL_EXPLAINERS[group.rail]}</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {group.channels.map((channel) => {
               const metric = metrics?.channels[channel];

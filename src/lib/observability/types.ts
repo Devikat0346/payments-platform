@@ -45,10 +45,23 @@ export interface RailMetric {
   slo_success_rate: number;
 }
 
+// The raw per-transaction type — what a single transaction actually is.
 export type TxnType = "credit" | "debit" | "wire" | "zelle";
 
+// The type-mix rollup breaks a transaction's type down *by rail*, since "credit"
+// on a card and "credit" on ACH are different payment mechanisms that just share
+// a word (see metrics.py). Never sum card_credit and ach_credit together.
+export type TxnTypeBreakdownKey =
+  | "card_credit"
+  | "card_debit"
+  | "ach_credit"
+  | "ach_debit"
+  | "wire"
+  | "zelle";
+
 export interface TxnTypeMetric {
-  txn_type: TxnType;
+  txn_type: TxnTypeBreakdownKey;
+  rail: Rail;
   total: number;
   success: number;
   failure: number;
@@ -61,7 +74,7 @@ export interface MetricsSummary {
   generated_at: string;
   channels: Record<Channel, ChannelMetric>;
   rails: Record<Rail, RailMetric>;
-  txn_types: Record<TxnType, TxnTypeMetric>;
+  txn_types: Record<TxnTypeBreakdownKey, TxnTypeMetric>;
 }
 
 export interface Transaction {

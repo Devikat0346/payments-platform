@@ -22,6 +22,7 @@
   --cat-aqua: #1baf7a;
   --cat-yellow: #eda100;
   --cat-green: #008300;
+  --cat-green-light: #5a9c1f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,6 +43,7 @@
     --cat-aqua: #199e70;
     --cat-yellow: #c98500;
     --cat-green: #008300;
+    --cat-green-light: #7ec850;
   }
 }
 

@@ -1,6 +1,6 @@
 import { InfoTip } from "@/components/InfoTip";
-import { RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtPct } from "@/lib/format";
+import { RAIL_EXPLAINERS, RAIL_LABELS, Rail } from "@/lib/channels";
+import { fmtCompactMoney, fmtPct } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 import { RailMetric } from "@/lib/observability/types";
 
@@ -17,9 +17,15 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
             : false;
         return (
           <div key={rail} className="card p-5 flex flex-col gap-1">
-            <span className="text-muted text-sm">{RAIL_LABELS[rail]}</span>
+            <span className="text-muted text-sm inline-flex items-center gap-1">
+              {RAIL_LABELS[rail]}
+              <InfoTip text={RAIL_EXPLAINERS[rail]} />
+            </span>
             <span className="text-2xl font-semibold tracking-tight" style={{ fontVariantNumeric: "tabular-nums" }}>
               {m ? m.total.toLocaleString() : "—"}
+            </span>
+            <span className="text-muted text-xs" style={{ fontVariantNumeric: "tabular-nums" }}>
+              {m ? fmtCompactMoney(m.total_amount) : "—"} in volume
             </span>
             <span
               className="text-xs"
