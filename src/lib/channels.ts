@@ -52,15 +52,16 @@ export const RAIL_LABELS: Record<Rail, string> = {
   ZELLE: "Zelle (P2P)",
 };
 
-// What actually distinguishes each rail — the network/settlement mechanism, not
-// just "it's a payment." ACH is *also* credit-or-debit under the hood (that's
-// what the type-mix chart's ach_credit/ach_debit split is showing) — it's a
-// different rail from cards, not a different category of credit/debit.
+// What actually distinguishes each rail — the network/settlement mechanism —
+// and, in the same breath, whether it maps to credit/debit. ACH is *also*
+// credit-or-debit under the hood (that's what the ach_credit/ach_debit split
+// in the type-mix chart is showing) — it's a different rail from cards, not a
+// different category of money movement.
 export const RAIL_EXPLAINERS: Record<Rail, string> = {
-  CARD: "Settled via card networks (Visa/Mastercard-style rails). Each transaction is run as either credit or debit.",
-  WIRE: "Bank-to-bank transfer, settled individually (often near-real-time), not categorized as credit or debit — it's its own settlement type.",
-  ACH_BATCH: "Bank-to-bank transfers settled via the ACH network in batches rather than the card networks. Also either credit (a deposit, e.g. payroll) or debit (a pull, e.g. bill pay) — just a different rail than cards.",
-  ZELLE: "Peer-to-peer instant payment network, settled directly bank-to-bank — its own rail, not credit, debit, wire, or ACH.",
+  CARD: "Moves money through card networks (Visa/Mastercard-style rails), authorized and settled per transaction. Each one is run as either credit or debit.",
+  WIRE: "Moves money bank-to-bank as an individual, often near-real-time transfer. No batching, and no credit/debit split — a wire is just a wire.",
+  ACH_BATCH: "Moves money bank-to-bank in batches instead of through the card networks. Like a card, each transaction is either a credit (a deposit, e.g. payroll) or a debit (a pull, e.g. bill pay) — it just travels a different rail to get there.",
+  ZELLE: "Moves money peer-to-peer, instantly, directly bank-to-bank. Its own network entirely — distinct from card, wire, and ACH, with no credit/debit split.",
 };
 
 export const TXN_TYPE_LABELS: Record<string, string> = {
