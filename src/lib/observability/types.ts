@@ -40,6 +40,13 @@ export interface ChannelMetric {
   availability: number | null;
   availability_slo_target: number;
   availability_burn_pct: number;
+  // Raw counts from the SAME 30m budget window availability_burn_pct is
+  // computed over — deliberately not technical_failures/total above (those
+  // are the 5m window), since a single rare failure can burn hundreds of
+  // times the five-nines budget and the count needs to match the number it's
+  // explaining.
+  availability_budget_window_technical_failures: number;
+  availability_budget_window_total: number;
   active_incident: Incident | null;
   // Present only for channels that can be more than one transaction type (card
   // and ACH channels) — e.g. { credit: {...}, debit: {...} }. null for channels

@@ -10,6 +10,11 @@ interface MeterProps {
   // Use for targets defined to more than 1 decimal place (e.g. "five nines" —
   // 99.999% would otherwise round up to a meaningless "100.0%").
   sloTargetPrecise?: boolean;
+  // Optional raw-count context (e.g. "1 technical failure in 30m"). Matters
+  // most for very tight budgets: a single event can show as hundreds of
+  // times over budget, which reads as mass failure without the actual count
+  // right next to it.
+  countContext?: string;
 }
 
 function severityColor(pct: number): string {
@@ -25,6 +30,7 @@ export function Meter({
   sloTarget,
   sloLabel = "Agreed SLA",
   sloTargetPrecise = false,
+  countContext,
 }: MeterProps) {
   const display = Math.min(pct, 100);
   const color = severityColor(pct);
@@ -38,6 +44,7 @@ export function Meter({
         </span>
         <span className="font-medium" style={{ fontVariantNumeric: "tabular-nums", color }}>
           {fmtBudgetBurn(pct)}
+          {countContext && <span className="text-muted font-normal"> ({countContext})</span>}
         </span>
       </div>
       <div

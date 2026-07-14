@@ -146,6 +146,11 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
         sloTarget={metric.availability_slo_target}
         sloLabel="Target (5 nines)"
         sloTargetPrecise
+        countContext={
+          metric.availability_budget_window_technical_failures > 0
+            ? `${metric.availability_budget_window_technical_failures} technical failure${metric.availability_budget_window_technical_failures === 1 ? "" : "s"} of ${metric.availability_budget_window_total}`
+            : undefined
+        }
       />
 
       <Meter

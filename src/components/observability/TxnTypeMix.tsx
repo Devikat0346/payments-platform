@@ -32,13 +32,7 @@ export function TxnTypeMix({
 
   return (
     <div className="card p-5 flex flex-col gap-4">
-      <div>
-        <h3 className="font-semibold">Transaction type mix</h3>
-        <p className="text-muted text-xs mt-0.5">
-          Card and ACH are each split into credit vs. debit — they&apos;re never combined, since a
-          card credit and an ACH credit are different payment mechanisms.
-        </p>
-      </div>
+      <h3 className="font-semibold">Transaction type mix</h3>
       <div
         className="flex h-7 rounded-md overflow-hidden gap-0.5"
         style={{ background: "var(--surface-card)" }}
