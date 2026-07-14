@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --surface-page: #f9f9f7;
-  --surface-card: #fcfcfb;
+  --surface-page: #faf8f4;
+  --surface-card: #fffdfa;
   --surface-raised: #ffffff;
   --surface-accent-wash: color-mix(in srgb, var(--accent) 6%, var(--surface-page));
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted: #898781;
-  --border: rgba(11, 11, 11, 0.09);
-  --border-strong: rgba(11, 11, 11, 0.16);
-  --gridline: #e1e0d9;
+  --text-primary: #17140f;
+  --text-secondary: #55503f;
+  --text-muted: #948e7c;
+  --border: rgba(23, 20, 15, 0.09);
+  --border-strong: rgba(23, 20, 15, 0.16);
+  --gridline: #e7e1d4;
 
-  --shadow-card: 0 1px 2px rgba(11, 11, 11, 0.04), 0 1px 1px rgba(11, 11, 11, 0.03);
-  --shadow-raised: 0 4px 16px rgba(11, 11, 11, 0.08), 0 1px 2px rgba(11, 11, 11, 0.04);
+  --shadow-card: 0 1px 2px rgba(40, 30, 10, 0.05), 0 1px 1px rgba(40, 30, 10, 0.03);
+  --shadow-raised: 0 8px 20px rgba(40, 30, 10, 0.1), 0 2px 4px rgba(40, 30, 10, 0.05);
 
   --accent: #3358e0;
   --accent-hover: #2646c2;
-  --accent-wash: rgba(51, 88, 224, 0.09);
+  --accent-wash: rgba(51, 88, 224, 0.1);
   --accent-fg: #ffffff;
+  --accent-2: #ff7a45;
+  --gradient-brand: linear-gradient(135deg, var(--accent), #7c5cff 55%, var(--accent-2));
 
   --seq-blue-300: #6da7ec;
   --seq-blue-450: #2a78d6;
@@ -30,6 +32,7 @@
   --status-critical: #d03b3b;
 
   --cat-blue: #2a78d6;
+  --cat-violet: #7c5cff;
   --cat-aqua: #1baf7a;
   --cat-yellow: #eda100;
   --cat-green: #008300;
@@ -64,6 +67,7 @@
     --status-warning: #e2a53d;
 
     --cat-blue: #3987e5;
+    --cat-violet: #8b5cf6;
     --cat-aqua: #199e70;
     --cat-yellow: #c98500;
     --cat-green: #008300;
@@ -161,4 +165,27 @@ body {
   background: var(--accent-wash);
   color: var(--accent);
   flex-shrink: 0;
+}
+
+.hero-wash {
+  position: relative;
+}
+
+.hero-wash::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  left: -160px;
+  width: 520px;
+  height: 420px;
+  border-radius: 999px;
+  background: var(--gradient-brand);
+  opacity: 0.12;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.brand-mark {
+  background: var(--gradient-brand);
 }

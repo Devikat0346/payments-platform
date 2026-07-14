@@ -22,12 +22,8 @@ export function NavShell({ children }: { children: React.ReactNode }) {
         style={{ borderColor: "var(--border)", background: "color-mix(in srgb, var(--surface-page) 85%, transparent)" }}
       >
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 h-14 flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight shrink-0">
-            <span
-              className="inline-block w-2 h-2 rounded-sm"
-              style={{ background: "var(--accent)" }}
-              aria-hidden
-            />
+          <Link href="/" className="flex items-center gap-2.5 font-semibold tracking-tight shrink-0">
+            <span className="brand-mark inline-block w-4 h-4 rounded-md" aria-hidden />
             Payments Platform
           </Link>
           <nav className="flex items-center gap-1 overflow-x-auto">
@@ -42,7 +38,7 @@ export function NavShell({ children }: { children: React.ReactNode }) {
                   }`}
                   style={{
                     color: active ? "var(--accent-fg)" : "var(--text-secondary)",
-                    background: active ? "var(--accent)" : "transparent",
+                    background: active ? "var(--gradient-brand)" : "transparent",
                   }}
                 >
                   {item.label}

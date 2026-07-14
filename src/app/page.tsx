@@ -11,6 +11,7 @@ interface ModuleCard {
   status: "live" | "soon";
   statLine?: string;
   icon: LucideIcon;
+  color: string;
 }
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
           ? `${status.channelsHealthy}/${status.channelsTotal} channels healthy`
           : undefined,
       icon: Activity,
+      color: "var(--cat-blue)",
     },
     {
       href: "/incidents",
@@ -37,6 +39,7 @@ export default function Home() {
       status: "live",
       statLine: status.activeCases !== null ? `${status.activeCases} active case(s)` : undefined,
       icon: Bot,
+      color: "var(--cat-violet)",
     },
     {
       href: "/reconciliation",
@@ -45,6 +48,7 @@ export default function Home() {
         "Batch-reconciles origination records against settlement/posting records, flags breaks, and scores transactions for anomalies.",
       status: "soon",
       icon: GitCompareArrows,
+      color: "var(--cat-aqua)",
     },
     {
       href: "/insights",
@@ -53,12 +57,13 @@ export default function Home() {
         "Payments economics (interchange, fees), KPI tracking, and ROI/scenario modeling for new payments initiatives — a business-case dashboard.",
       status: "soon",
       icon: LineChart,
+      color: "var(--cat-yellow)",
     },
   ];
 
   return (
     <div className="px-6 py-12 md:px-12 lg:px-20 max-w-[1400px] mx-auto">
-      <section className="max-w-2xl mb-10">
+      <section className="hero-wash max-w-2xl mb-10">
         <span className="section-label">Portfolio project</span>
         <h1 className="text-4xl font-semibold tracking-tight mt-3 mb-3">
           A payments platform, built end-to-end
@@ -84,11 +89,15 @@ export default function Home() {
               opacity: m.status === "live" ? 1 : 0.55,
               cursor: m.status === "live" ? "pointer" : "default",
               pointerEvents: m.status === "live" ? "auto" : "none",
+              borderTop: `2px solid ${m.color}`,
             }}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="icon-tile">
+                <span
+                  className="icon-tile"
+                  style={{ background: `color-mix(in srgb, ${m.color} 15%, transparent)`, color: m.color }}
+                >
                   <m.icon size={18} strokeWidth={2} />
                 </span>
                 <h2 className="font-semibold text-lg">{m.title}</h2>

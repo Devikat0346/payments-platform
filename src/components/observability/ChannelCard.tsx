@@ -18,6 +18,15 @@ const RAIL_ICON: Record<Rail, LucideIcon> = {
   ZELLE: Smartphone,
 };
 
+// Same hue each rail uses in the transaction-type-mix chart, so identity stays
+// consistent wherever a rail shows up — never repainted per view.
+const RAIL_COLOR: Record<Rail, string> = {
+  CARD: "var(--cat-blue)",
+  WIRE: "var(--cat-yellow)",
+  ACH_BATCH: "var(--cat-green)",
+  ZELLE: "var(--cat-aqua)",
+};
+
 interface ChannelCardProps {
   metric: ChannelMetric;
   history: HistoryPoint[];
@@ -42,6 +51,7 @@ function TypeBreakdownLine({ breakdown }: { breakdown: Record<string, { total: n
 export function ChannelCard({ metric, history }: ChannelCardProps) {
   const isBatch = BATCH_CHANNELS.includes(metric.channel);
   const RailIcon = RAIL_ICON[metric.rail];
+  const railColor = RAIL_COLOR[metric.rail];
 
   const chartData = isBatch
     ? history.map((h) => ({ t: h.t, value: h.successRate !== null ? h.successRate * 100 : null }))
@@ -52,7 +62,10 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
     <div className="card card-interactive p-5 flex flex-col gap-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-start gap-3">
-          <span className="icon-tile mt-0.5">
+          <span
+            className="icon-tile mt-0.5"
+            style={{ background: `color-mix(in srgb, ${railColor} 15%, transparent)`, color: railColor }}
+          >
             <RailIcon size={16} strokeWidth={2} />
           </span>
           <div>
@@ -94,7 +107,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="var(--seq-blue-450)"
+                stroke={railColor}
                 strokeWidth={2}
                 dot={false}
                 isAnimationActive={false}

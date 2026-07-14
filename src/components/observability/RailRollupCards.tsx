@@ -14,6 +14,15 @@ const RAIL_ICON: Record<Rail, LucideIcon> = {
   ZELLE: Smartphone,
 };
 
+// Same hue each rail uses in the transaction-type-mix chart, so identity stays
+// consistent wherever a rail shows up — never repainted per view.
+const RAIL_COLOR: Record<Rail, string> = {
+  CARD: "var(--cat-blue)",
+  WIRE: "var(--cat-yellow)",
+  ACH_BATCH: "var(--cat-green)",
+  ZELLE: "var(--cat-aqua)",
+};
+
 export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | undefined }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -24,14 +33,22 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
             ? m.success_rate < m.slo_success_rate
             : false;
         const RailIcon = RAIL_ICON[rail];
+        const railColor = RAIL_COLOR[rail];
         return (
-          <div key={rail} className="card p-5 flex flex-col gap-1">
+          <div
+            key={rail}
+            className="card p-5 flex flex-col gap-1"
+            style={{ borderTop: `2px solid ${railColor}` }}
+          >
             <div className="flex items-center justify-between mb-1">
               <span className="text-muted text-sm inline-flex items-center gap-1">
                 {RAIL_LABELS[rail]}
                 <InfoTip text={RAIL_EXPLAINERS[rail]} />
               </span>
-              <span className="icon-tile !w-7 !h-7 !rounded-lg">
+              <span
+                className="icon-tile !w-7 !h-7 !rounded-lg"
+                style={{ background: `color-mix(in srgb, ${railColor} 15%, transparent)`, color: railColor }}
+              >
                 <RailIcon size={14} strokeWidth={2} />
               </span>
             </div>
