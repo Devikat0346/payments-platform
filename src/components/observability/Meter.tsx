@@ -1,4 +1,5 @@
 import { InfoTip } from "@/components/InfoTip";
+import { fmtBudgetBurn } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 
 interface MeterProps {
@@ -23,8 +24,8 @@ export function Meter({ label, pct }: MeterProps) {
           {label}
           <InfoTip text={JARGON.errorBudgetBurn} />
         </span>
-        <span className="text-secondary font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
-          {pct.toFixed(0)}%
+        <span className="font-medium" style={{ fontVariantNumeric: "tabular-nums", color }}>
+          {fmtBudgetBurn(pct)}
         </span>
       </div>
       <div

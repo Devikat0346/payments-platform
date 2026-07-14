@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fmtCompactMoney, fmtMoney, fmtMs, fmtPct } from "./format";
+import { fmtBudgetBurn, fmtCompactMoney, fmtMoney, fmtMs, fmtPct, fmtVolumeShare } from "./format";
 
 describe("fmtMs", () => {
   it("returns an em dash for null/undefined", () => {
@@ -49,5 +49,29 @@ describe("fmtCompactMoney", () => {
 
   it("uses M suffix for millions", () => {
     expect(fmtCompactMoney(2_340_000)).toBe("$2.34M");
+  });
+});
+
+describe("fmtBudgetBurn", () => {
+  it("shows '% of budget used' at or under 100", () => {
+    expect(fmtBudgetBurn(38)).toBe("38% of budget used");
+    expect(fmtBudgetBurn(0)).toBe("0% of budget used");
+  });
+
+  it("switches to an 'x over budget' multiplier above 100", () => {
+    expect(fmtBudgetBurn(100)).toBe("1.0x over budget");
+    expect(fmtBudgetBurn(503)).toBe("5.0x over budget");
+    expect(fmtBudgetBurn(2600)).toBe("26.0x over budget");
+  });
+});
+
+describe("fmtVolumeShare", () => {
+  it("returns null when total is zero or negative", () => {
+    expect(fmtVolumeShare(100, 0)).toBeNull();
+  });
+
+  it("formats a share of total as a whole-number percentage", () => {
+    expect(fmtVolumeShare(25, 100)).toBe("25% of all volume");
+    expect(fmtVolumeShare(2_510_000, 20_900_000)).toBe("12% of all volume");
   });
 });

@@ -4,11 +4,13 @@ export const JARGON: Record<string, string> = {
   sli: "Service Level Indicator — a measured number (like success rate or latency) that describes how well something is actually performing right now.",
   slo: "Service Level Objective — the target we've committed to for an SLI (e.g. '99% of transactions succeed'). It's the line that shouldn't be crossed.",
   errorBudgetBurn:
-    "How much of the 'allowed failure' budget has been used up. 100% means the budget for this period is fully spent — anything past that is failing more than the target permits.",
+    "Every reliability target allows for some failures (e.g. 99% success still permits 1% to fail). This tracks how much of that allowance has been used. 'X% of budget used' means still within the allowance; 'Nx over budget' means it's failing N times more often than the target permits.",
   mttd: "Mean Time To Detect — how long it takes to notice something is wrong.",
   mttr: "Mean Time To Resolve — how long it takes to fix something once it's noticed.",
   timeToInsight:
     "How long after a problem was detected the AI took to produce a diagnosis — this platform's stand-in for MTTD in an AI-assisted workflow.",
+  typicalSpeed: "The middle transaction — half of all transactions were faster than this, half were slower. Technically called 'p50 latency.'",
+  slowestCases: "How slow the worst 1% of transactions were. A few slow outliers can hurt real customers even when the typical case looks fine. Technically called 'p99 latency.'",
 };
 
 export const REASON_CODES: Record<string, string> = {

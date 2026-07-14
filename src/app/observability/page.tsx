@@ -8,7 +8,7 @@ import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
 import { CHANNEL_LABELS, Channel, RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtCompactMoney } from "@/lib/format";
+import { fmtBudgetBurn, fmtCompactMoney, fmtVolumeShare } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 
 const RAIL_CHANNEL_GROUPS: { rail: Rail; channels: Channel[] }[] = [
@@ -26,10 +26,12 @@ export default function ObservabilityPage() {
   const totalSuccess = channels.reduce((sum, c) => sum + c.success, 0);
   const overallSuccessRate = totalTxns > 0 ? totalSuccess / totalTxns : null;
   const activeIncidentCount = incidents.filter((i) => i.active).length;
-  const worstBurn = channels.length
-    ? Math.max(...channels.map((c) => c.error_budget_burn_pct))
-    : 0;
+  const worstChannel = channels.length
+    ? channels.reduce((worst, c) => (c.error_budget_burn_pct > worst.error_budget_burn_pct ? c : worst))
+    : null;
+  const totalDollarVolume = channels.reduce((sum, c) => sum + c.total_amount, 0);
   const failedDollarVolume = channels.reduce((sum, c) => sum + c.failure_amount, 0);
+  const failedVolumeShare = fmtVolumeShare(failedDollarVolume, totalDollarVolume);
 
   return (
     <div className="px-6 py-10 md:px-12 lg:px-20 max-w-[1400px] mx-auto">
@@ -64,9 +66,9 @@ export default function ObservabilityPage() {
           value={overallSuccessRate !== null ? `${(overallSuccessRate * 100).toFixed(2)}%` : "—"}
         />
         <StatTile
-          label="$ in failed/returned txns"
+          label="Dollars in failed payments"
           value={fmtCompactMoney(failedDollarVolume)}
-          sublabel="5m window — business impact"
+          sublabel={failedVolumeShare ? `${failedVolumeShare} (5m)` : "5m window"}
         />
         <StatTile
           label="Active incidents"
@@ -74,9 +76,9 @@ export default function ObservabilityPage() {
           sublabel={activeIncidentCount ? "channels degraded" : "all clear"}
         />
         <StatTile
-          label="Worst error-budget burn"
-          value={`${worstBurn.toFixed(0)}%`}
-          sublabel="30m rolling window"
+          label="Biggest reliability miss"
+          value={worstChannel && worstChannel.error_budget_burn_pct > 0 ? fmtBudgetBurn(worstChannel.error_budget_burn_pct) : "None"}
+          sublabel={worstChannel && worstChannel.error_budget_burn_pct > 0 ? CHANNEL_LABELS[worstChannel.channel] : "all within target"}
           tooltip={JARGON.errorBudgetBurn}
         />
       </section>

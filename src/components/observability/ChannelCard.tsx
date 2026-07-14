@@ -3,10 +3,12 @@
 import { Line, LineChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
 import { HealthBadge } from "./HealthBadge";
 import { Meter } from "./Meter";
+import { InfoTip } from "@/components/InfoTip";
 import { HistoryPoint } from "@/lib/observability/useLiveData";
 import { ChannelMetric } from "@/lib/observability/types";
 import { BATCH_CHANNELS, CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
 import { fmtMs, fmtPct } from "@/lib/format";
+import { JARGON } from "@/lib/glossary";
 
 interface ChannelCardProps {
   metric: ChannelMetric;
@@ -98,13 +100,19 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
         ) : (
           <>
             <div>
-              <div className="text-muted text-xs">p50 latency</div>
+              <div className="text-muted text-xs inline-flex items-center gap-1">
+                Typical speed
+                <InfoTip text={JARGON.typicalSpeed} />
+              </div>
               <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {fmtMs(metric.p50_latency_ms)}
               </div>
             </div>
             <div>
-              <div className="text-muted text-xs">p99 latency</div>
+              <div className="text-muted text-xs inline-flex items-center gap-1">
+                Slowest cases
+                <InfoTip text={JARGON.slowestCases} />
+              </div>
               <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {fmtMs(metric.p99_latency_ms)}
               </div>
@@ -113,7 +121,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
         )}
       </div>
 
-      <Meter label="Error budget burn (30m window)" pct={metric.error_budget_burn_pct} />
+      <Meter label="Reliability budget (30m)" pct={metric.error_budget_burn_pct} />
     </div>
   );
 }
