@@ -1,5 +1,5 @@
 import { InfoTip } from "@/components/InfoTip";
-import { fmtBudgetBurn, fmtPct } from "@/lib/format";
+import { fmtBudgetBurn, fmtPct, fmtPctPrecise } from "@/lib/format";
 
 interface MeterProps {
   label: string;
@@ -7,6 +7,9 @@ interface MeterProps {
   tooltip: string;
   sloTarget?: number; // the agreed target this budget is measured against
   sloLabel?: string; // defaults to "Agreed SLA"
+  // Use for targets defined to more than 1 decimal place (e.g. "five nines" —
+  // 99.999% would otherwise round up to a meaningless "100.0%").
+  sloTargetPrecise?: boolean;
 }
 
 function severityColor(pct: number): string {
@@ -15,7 +18,14 @@ function severityColor(pct: number): string {
   return "var(--seq-blue-450)";
 }
 
-export function Meter({ label, pct, tooltip, sloTarget, sloLabel = "Agreed SLA" }: MeterProps) {
+export function Meter({
+  label,
+  pct,
+  tooltip,
+  sloTarget,
+  sloLabel = "Agreed SLA",
+  sloTargetPrecise = false,
+}: MeterProps) {
   const display = Math.min(pct, 100);
   const color = severityColor(pct);
 
@@ -41,7 +51,7 @@ export function Meter({ label, pct, tooltip, sloTarget, sloLabel = "Agreed SLA" 
       />
       {sloTarget !== undefined && (
         <span className="text-muted text-xs">
-          {sloLabel}: {fmtPct(sloTarget)}
+          {sloLabel}: {sloTargetPrecise ? fmtPctPrecise(sloTarget) : fmtPct(sloTarget)}
         </span>
       )}
     </div>

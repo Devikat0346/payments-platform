@@ -3,9 +3,16 @@ export function fmtMs(v: number | null | undefined): string {
   return v >= 1000 ? `${(v / 1000).toFixed(2)}s` : `${v.toFixed(0)}ms`;
 }
 
-export function fmtPct(v: number | null | undefined): string {
+export function fmtPct(v: number | null | undefined, decimals = 1): string {
   if (v === null || v === undefined) return "—";
-  return `${(v * 100).toFixed(1)}%`;
+  return `${(v * 100).toFixed(decimals)}%`;
+}
+
+// 1 decimal place rounds 99.999% up to a meaningless "100.0%" — exactly the
+// precision that matters for a "five nines" figure. Use wherever an
+// availability value or target is shown.
+export function fmtPctPrecise(v: number | null | undefined): string {
+  return fmtPct(v, 3);
 }
 
 export function fmtMoney(v: number): string {

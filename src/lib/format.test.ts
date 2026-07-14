@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fmtBudgetBurn, fmtCompactMoney, fmtMoney, fmtMs, fmtPct, fmtVolumeShare } from "./format";
+import { fmtBudgetBurn, fmtCompactMoney, fmtMoney, fmtMs, fmtPct, fmtPctPrecise, fmtVolumeShare } from "./format";
 
 describe("fmtMs", () => {
   it("returns an em dash for null/undefined", () => {
@@ -28,6 +28,23 @@ describe("fmtPct", () => {
     expect(fmtPct(0.99)).toBe("99.0%");
     expect(fmtPct(1)).toBe("100.0%");
     expect(fmtPct(0)).toBe("0.0%");
+  });
+
+  it("accepts a custom decimal count", () => {
+    expect(fmtPct(0.99999, 3)).toBe("99.999%");
+  });
+});
+
+describe("fmtPctPrecise", () => {
+  it("shows enough precision that 'five nines' doesn't round away", () => {
+    // At 1 decimal place, 99.999% incorrectly rounds up to a meaningless
+    // "100.0%" — exactly the case this function exists to avoid.
+    expect(fmtPctPrecise(0.99999)).toBe("99.999%");
+  });
+
+  it("returns an em dash for null/undefined", () => {
+    expect(fmtPctPrecise(null)).toBe("—");
+    expect(fmtPctPrecise(undefined)).toBe("—");
   });
 });
 

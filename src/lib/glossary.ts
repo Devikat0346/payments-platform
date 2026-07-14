@@ -41,12 +41,15 @@ export const REASON_CODES: Record<string, string> = {
   R29_unauthorized: "ACH return code R29 — the account holder didn't authorize this debit.",
   duplicate_wire_reference: "This wire's reference number was already used in a prior batch.",
   insufficient_funds_at_settlement: "Funds were available when submitted but not by the time the batch settled.",
-  FILE_REJECTED: "The entire batch file was rejected before any individual item was processed.",
-  // Technical/system failures — these are availability misses, not business
-  // declines. Kept in the same lookup since the UI shows them the same way
-  // (a reason code next to a transaction), but they mean something different.
+  // FILE_REJECTED is a business/format exception (bad file formatting,
+  // out-of-balance totals, etc.) — it counts against the approval-rate SLO,
+  // not availability, even though the transaction's status is "failed".
+  FILE_REJECTED: "The entire batch file was rejected before any individual item was processed — a business/format exception (bad formatting, out-of-balance totals), not a system outage.",
+  // Genuine technical/system failures — these ARE availability misses, unlike
+  // FILE_REJECTED above. Kept in the same lookup since the UI shows them the
+  // same way (a reason code next to a transaction), but they mean something
+  // fundamentally different, which is why they're tagged "system" in the feed.
   gateway_timeout: "The system never got a response from the processing gateway in time. A genuine technical failure, not a business decline.",
   internal_error: "An unexpected internal error prevented the platform from reaching a decision. A genuine technical failure, not a business decline.",
   downstream_unavailable: "A required downstream service was unavailable when this transaction was processed. A genuine technical failure, not a business decline.",
-  file_rejected: "The whole batch file was rejected before processing — a technical/operational failure, not a business decision on any individual item.",
 };

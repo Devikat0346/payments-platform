@@ -8,7 +8,7 @@ import { TxnTypeMix } from "@/components/observability/TxnTypeMix";
 import { StatTile } from "@/components/StatTile";
 import { useLiveData } from "@/lib/observability/useLiveData";
 import { CHANNEL_LABELS, Channel, RAIL_EXPLAINERS, RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtBudgetBurn, fmtCompactMoney, fmtPct, fmtVolumeShare } from "@/lib/format";
+import { fmtBudgetBurn, fmtCompactMoney, fmtPct, fmtPctPrecise, fmtVolumeShare } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 
 const RAIL_CHANNEL_GROUPS: { rail: Rail; channels: Channel[] }[] = [
@@ -72,7 +72,7 @@ export default function ObservabilityPage() {
         />
         <StatTile
           label="Platform availability"
-          value={platformAvailability !== null ? fmtPct(platformAvailability) : "—"}
+          value={platformAvailability !== null ? fmtPctPrecise(platformAvailability) : "—"}
           sublabel="Target: 99.999% (5 nines)"
           tooltip={JARGON.platformAvailability}
         />

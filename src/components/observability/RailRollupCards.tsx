@@ -1,6 +1,6 @@
 import { InfoTip } from "@/components/InfoTip";
 import { RAIL_EXPLAINERS, RAIL_LABELS, Rail } from "@/lib/channels";
-import { fmtCompactMoney, fmtPct } from "@/lib/format";
+import { fmtCompactMoney, fmtPct, fmtPctPrecise } from "@/lib/format";
 import { JARGON } from "@/lib/glossary";
 import { RailMetric } from "@/lib/observability/types";
 
@@ -38,7 +38,7 @@ export function RailRollupCards({ rails }: { rails: Record<Rail, RailMetric> | u
               </span>
             </span>
             <span className="text-xs text-muted inline-flex items-center gap-1">
-              Availability target: {m ? fmtPct(m.availability_slo_target) : "—"}
+              Availability target: {m ? fmtPctPrecise(m.availability_slo_target) : "—"}
               <InfoTip text={JARGON.platformAvailability} />
             </span>
           </div>

@@ -145,6 +145,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
         tooltip={JARGON.platformAvailability}
         sloTarget={metric.availability_slo_target}
         sloLabel="Target (5 nines)"
+        sloTargetPrecise
       />
 
       <Meter
