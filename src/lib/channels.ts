@@ -40,6 +40,11 @@ export const CHANNEL_ORIGIN_DESCRIPTIONS: Record<Channel, string> = {
   zelle_online: "P2P send/request via online banking",
 };
 
+// Channels processed in batch windows rather than per-transaction in real time —
+// mirrors the backend's BATCH_CHANNELS. These never have auth latency, so the UI
+// shows volume/return-rate trends for them instead of a latency sparkline.
+export const BATCH_CHANNELS: Channel[] = ["ach_batch_file", "wire_batch"];
+
 export const RAIL_LABELS: Record<Rail, string> = {
   CARD: "Card (Credit/Debit)",
   WIRE: "Wire Transfer",

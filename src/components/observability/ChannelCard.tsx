@@ -5,7 +5,7 @@ import { HealthBadge } from "./HealthBadge";
 import { Meter } from "./Meter";
 import { HistoryPoint } from "@/lib/observability/useLiveData";
 import { ChannelMetric } from "@/lib/observability/types";
-import { CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
+import { BATCH_CHANNELS, CHANNEL_LABELS, CHANNEL_ORIGIN_DESCRIPTIONS } from "@/lib/channels";
 
 interface ChannelCardProps {
   metric: ChannelMetric;
@@ -23,7 +23,11 @@ function fmtPct(v: number | null): string {
 }
 
 export function ChannelCard({ metric, history }: ChannelCardProps) {
-  const chartData = history.map((h) => ({ t: h.t, p50: h.p50 }));
+  const isBatch = BATCH_CHANNELS.includes(metric.channel);
+
+  const chartData = isBatch
+    ? history.map((h) => ({ t: h.t, value: h.successRate !== null ? h.successRate * 100 : null }))
+    : history.map((h) => ({ t: h.t, value: h.p50 }));
 
   return (
     <div className="card p-5 flex flex-col gap-4">
@@ -45,7 +49,7 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
       )}
 
       <div className="h-14 -mx-1">
-        {chartData.some((d) => d.p50 !== null) ? (
+        {chartData.some((d) => d.value !== null) ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 4 }}>
               <YAxis hide domain={["auto", "auto"]} />
@@ -57,11 +61,15 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
                   fontSize: 12,
                 }}
                 labelFormatter={() => ""}
-                formatter={(value) => [fmtMs(typeof value === "number" ? value : null), "p50 latency"]}
+                formatter={(value) =>
+                  isBatch
+                    ? [`${typeof value === "number" ? value.toFixed(1) : "—"}%`, "success rate"]
+                    : [fmtMs(typeof value === "number" ? value : null), "p50 latency"]
+                }
               />
               <Line
                 type="monotone"
-                dataKey="p50"
+                dataKey="value"
                 stroke="var(--seq-blue-450)"
                 strokeWidth={2}
                 dot={false}
@@ -81,18 +89,37 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
             {fmtPct(metric.success_rate)}
           </div>
         </div>
-        <div>
-          <div className="text-muted text-xs">p50 latency</div>
-          <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
-            {fmtMs(metric.p50_latency_ms)}
-          </div>
-        </div>
-        <div>
-          <div className="text-muted text-xs">p99 latency</div>
-          <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
-            {fmtMs(metric.p99_latency_ms)}
-          </div>
-        </div>
+        {isBatch ? (
+          <>
+            <div>
+              <div className="text-muted text-xs">Processed (5m)</div>
+              <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {metric.total.toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <div className="text-muted text-xs">Returned/failed</div>
+              <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {metric.failure.toLocaleString()}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <div className="text-muted text-xs">p50 latency</div>
+              <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {fmtMs(metric.p50_latency_ms)}
+              </div>
+            </div>
+            <div>
+              <div className="text-muted text-xs">p99 latency</div>
+              <div className="font-medium" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {fmtMs(metric.p99_latency_ms)}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <Meter label="Error budget burn (30m window)" pct={metric.error_budget_burn_pct} />
