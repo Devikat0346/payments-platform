@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { InfoTip } from "@/components/InfoTip";
 import { CHANNEL_LABELS } from "@/lib/channels";
 import { fmtMoney } from "@/lib/format";
@@ -15,6 +18,15 @@ const STATUS_COLOR: Record<Transaction["status"], string> = {
 };
 
 export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  function handleCopy(id: string) {
+    navigator.clipboard.writeText(id).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId((current) => (current === id ? null : current)), 1500);
+    });
+  }
+
   return (
     <div className="card overflow-hidden">
       <div className="px-5 py-4 border-b flex items-center gap-2" style={{ borderColor: "var(--border)" }}>
@@ -30,6 +42,7 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
           <thead>
             <tr className="text-left text-muted text-xs sticky top-0" style={{ background: "var(--surface-card)" }}>
               <th className="px-5 py-2 font-medium">Time</th>
+              <th className="px-5 py-2 font-medium">ID</th>
               <th className="px-5 py-2 font-medium">Channel</th>
               <th className="px-5 py-2 font-medium">Amount</th>
               <th className="px-5 py-2 font-medium">Status</th>
@@ -48,6 +61,17 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
               >
                 <td className="px-5 py-2 text-muted" style={{ fontVariantNumeric: "tabular-nums" }}>
                   {new Date(txn.updated_at).toLocaleTimeString()}
+                </td>
+                <td className="px-5 py-2">
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(txn.id)}
+                    title={txn.id}
+                    className="font-mono text-xs rounded px-1.5 py-0.5 hover:bg-[var(--border)]"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {copiedId === txn.id ? "Copied!" : `${txn.id.slice(0, 8)}…`}
+                  </button>
                 </td>
                 <td className="px-5 py-2">{CHANNEL_LABELS[txn.channel]}</td>
                 <td className="px-5 py-2" style={{ fontVariantNumeric: "tabular-nums" }}>
