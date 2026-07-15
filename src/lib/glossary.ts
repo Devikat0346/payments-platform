@@ -15,6 +15,16 @@ export const JARGON: Record<string, string> = {
     "Did the platform return a decision at all — approved or declined — without erroring or timing out? This is different from the approval rate: a card declined for insufficient funds is the system working correctly, not an availability problem. Target is 'five nines' (99.999%) across every rail, since this is an infrastructure commitment, not a business outcome.",
   approvalRate:
     "Of the transactions the platform actually processed, how many were approved? This includes expected business declines (fraud holds, insufficient funds, compliance holds) — a high decline rate here can be completely normal and by design, unlike an availability miss.",
+  matchRate:
+    "Of the transactions expected to have a downstream settlement confirmation, how many matched exactly? A small gap is normal — reconciliation exists to catch and investigate the rest, not to reach 100%.",
+  missingSettlement:
+    "The platform processed this transaction, but no confirmation ever arrived from the downstream system (core banking, network settlement). The highest-priority break, since it means money moved with no confirmed settlement.",
+  duplicateSettlement:
+    "Two or more settlement confirmations arrived for a single transaction — a double-posting risk that needs investigating before it becomes a real duplicate charge or payout.",
+  amountMismatch:
+    "The settlement confirmation's amount doesn't match the original transaction's amount — could be an FX rounding difference, a fee deduction, or a data-entry error.",
+  orphanedSettlement:
+    "A settlement confirmation arrived referencing a transaction that doesn't exist in the origination system at all — e.g. a manual adjustment or a data-entry error on the downstream side.",
 };
 
 export const REASON_CODES: Record<string, string> = {
