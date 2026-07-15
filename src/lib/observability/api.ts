@@ -29,3 +29,18 @@ export async function fetchIncidents(activeOnly = false) {
   if (!res.ok) throw new Error(`Failed to fetch incidents: ${res.status}`);
   return res.json();
 }
+
+export async function fetchChannelHistory(channel: string, limit = 50, offset = 0) {
+  const res = await fetch(
+    `${API_URL}/api/channels/${channel}/history?limit=${limit}&offset=${offset}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Failed to fetch channel history: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchTransactionById(id: string) {
+  const res = await fetch(`${API_URL}/api/transactions/${id}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to fetch transaction: ${res.status}`);
+  return res.json();
+}

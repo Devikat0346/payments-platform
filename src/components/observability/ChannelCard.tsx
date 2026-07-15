@@ -1,7 +1,9 @@
 "use client";
 
-import { ArrowLeftRight, CreditCard, Landmark, Smartphone, type LucideIcon } from "lucide-react";
+import { ArrowLeftRight, CreditCard, History, Landmark, Smartphone, type LucideIcon } from "lucide-react";
+import { useState } from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
+import { ChannelHistoryModal } from "./ChannelHistoryModal";
 import { HealthBadge } from "./HealthBadge";
 import { Meter } from "./Meter";
 import { InfoTip } from "@/components/InfoTip";
@@ -49,6 +51,7 @@ function TypeBreakdownLine({ breakdown }: { breakdown: Record<string, { total: n
 }
 
 export function ChannelCard({ metric, history }: ChannelCardProps) {
+  const [showHistory, setShowHistory] = useState(false);
   const isBatch = BATCH_CHANNELS.includes(metric.channel);
   const RailIcon = RAIL_ICON[metric.rail];
   const railColor = RAIL_COLOR[metric.rail];
@@ -73,8 +76,22 @@ export function ChannelCard({ metric, history }: ChannelCardProps) {
             <p className="text-muted text-xs">{CHANNEL_ORIGIN_DESCRIPTIONS[metric.channel]}</p>
           </div>
         </div>
-        <HealthBadge health={metric.health} />
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowHistory(true)}
+            title="View full history"
+            className="rounded-md p-1 text-muted hover:bg-[var(--border)] hover:text-secondary transition-colors"
+          >
+            <History size={14} />
+          </button>
+          <HealthBadge health={metric.health} />
+        </div>
       </div>
+
+      {showHistory && (
+        <ChannelHistoryModal channel={metric.channel} onClose={() => setShowHistory(false)} />
+      )}
 
       {metric.active_incident && (
         <div

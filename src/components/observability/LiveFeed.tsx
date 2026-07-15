@@ -1,11 +1,13 @@
 "use client";
 
+import { Eye } from "lucide-react";
 import { useState } from "react";
 import { InfoTip } from "@/components/InfoTip";
 import { CHANNEL_LABELS } from "@/lib/channels";
 import { fmtMoney } from "@/lib/format";
 import { REASON_CODES } from "@/lib/glossary";
 import { Transaction } from "@/lib/observability/types";
+import { TransactionDetailModal } from "./TransactionDetailModal";
 
 const STATUS_COLOR: Record<Transaction["status"], string> = {
   initiated: "var(--text-muted)",
@@ -19,6 +21,7 @@ const STATUS_COLOR: Record<Transaction["status"], string> = {
 
 export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   function handleCopy(id: string) {
     navigator.clipboard.writeText(id).then(() => {
@@ -63,15 +66,25 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
                   {new Date(txn.updated_at).toLocaleTimeString()}
                 </td>
                 <td className="px-5 py-2">
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(txn.id)}
-                    title={txn.id}
-                    className="font-mono text-xs rounded px-1.5 py-0.5 hover:bg-[var(--border)]"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    {copiedId === txn.id ? "Copied!" : `${txn.id.slice(0, 8)}…`}
-                  </button>
+                  <span className="inline-flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(txn.id)}
+                      title={txn.id}
+                      className="font-mono text-xs rounded px-1.5 py-0.5 hover:bg-[var(--border)]"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {copiedId === txn.id ? "Copied!" : `${txn.id.slice(0, 8)}…`}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDetailId(txn.id)}
+                      title="View detail"
+                      className="rounded p-0.5 text-muted hover:bg-[var(--border)] hover:text-secondary transition-colors"
+                    >
+                      <Eye size={12} />
+                    </button>
+                  </span>
                 </td>
                 <td className="px-5 py-2">{CHANNEL_LABELS[txn.channel]}</td>
                 <td className="px-5 py-2" style={{ fontVariantNumeric: "tabular-nums" }}>
@@ -132,6 +145,7 @@ export function LiveFeed({ transactions }: { transactions: Transaction[] }) {
           <div className="px-5 py-8 text-center text-muted text-sm">Waiting for transactions…</div>
         )}
       </div>
+      {detailId && <TransactionDetailModal id={detailId} onClose={() => setDetailId(null)} />}
     </div>
   );
 }

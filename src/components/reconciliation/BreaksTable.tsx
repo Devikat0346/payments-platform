@@ -1,9 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import { BreakBadge } from "./BreakBadge";
+import { BreakDetailModal } from "./BreakDetailModal";
 import { CHANNEL_LABELS } from "@/lib/channels";
 import { fmtMoney } from "@/lib/format";
 import { ReconciliationBreak } from "@/lib/reconciliation/types";
 
 export function BreaksTable({ breaks }: { breaks: ReconciliationBreak[] }) {
+  const [selectedBreakId, setSelectedBreakId] = useState<string | null>(null);
+
   return (
     <div className="card overflow-hidden">
       <div className="px-5 py-4 border-b flex items-center gap-2" style={{ borderColor: "var(--border)" }}>
@@ -13,6 +19,7 @@ export function BreaksTable({ breaks }: { breaks: ReconciliationBreak[] }) {
           aria-hidden
         />
         <h3 className="font-semibold">Reconciliation breaks</h3>
+        <span className="text-muted text-xs ml-auto">Click a row for detail</span>
       </div>
       <div className="max-h-[32rem] overflow-y-auto">
         <table className="w-full text-sm">
@@ -30,7 +37,8 @@ export function BreaksTable({ breaks }: { breaks: ReconciliationBreak[] }) {
             {breaks.slice(0, 100).map((b, i) => (
               <tr
                 key={b.id}
-                className="border-t"
+                onClick={() => setSelectedBreakId(b.id)}
+                className="border-t cursor-pointer hover:bg-[var(--border)] transition-colors"
                 style={{
                   borderColor: "var(--gridline)",
                   background: i % 2 === 1 ? "color-mix(in srgb, var(--text-primary) 2%, transparent)" : "transparent",
@@ -60,6 +68,9 @@ export function BreaksTable({ breaks }: { breaks: ReconciliationBreak[] }) {
           </div>
         )}
       </div>
+      {selectedBreakId && (
+        <BreakDetailModal breakId={selectedBreakId} onClose={() => setSelectedBreakId(null)} />
+      )}
     </div>
   );
 }

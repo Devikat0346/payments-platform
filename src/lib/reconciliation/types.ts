@@ -42,3 +42,35 @@ export interface ReconciliationSummary {
   overall_match_rate: number | null;
   break_counts_by_type: Partial<Record<BreakType, number>>;
 }
+
+export interface OriginationRecord {
+  id: string;
+  rail: Rail;
+  channel: Channel;
+  txn_type: string;
+  amount: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SettlementRecordDetail {
+  id: string;
+  origination_id: string | null;
+  rail: Rail;
+  channel: Channel;
+  amount: number;
+  source: string;
+  settled_at: string;
+}
+
+export interface BreakDetail {
+  break: ReconciliationBreak;
+  origination: OriginationRecord | null;
+  settlements: SettlementRecordDetail[];
+}
+
+export interface RunDetail {
+  run: ReconciliationRun;
+  breaks: ReconciliationBreak[];
+}
