@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Bot, GitCompareArrows, LineChart, type LucideIcon } from "lucide-react";
+import { Activity, Bot, GitCompareArrows, LineChart, MessagesSquare, type LucideIcon } from "lucide-react";
 import { useOverviewStatus } from "@/lib/useOverviewStatus";
 
 interface ModuleCard {
@@ -42,11 +42,20 @@ export default function Home() {
       color: "var(--cat-violet)",
     },
     {
+      href: "/support",
+      title: "Support Agent",
+      description:
+        "A multi-turn, guardrailed conversational agent that answers questions about a specific transaction — grounded only in the live record it looks up, never invented. Evaluated with RAGAS and DeepEval.",
+      status: "live",
+      icon: MessagesSquare,
+      color: "var(--cat-green)",
+    },
+    {
       href: "/reconciliation",
       title: "Reconciliation",
       description:
-        "Batch-reconciles origination records against settlement/posting records, flags breaks, and scores transactions for anomalies.",
-      status: "soon",
+        "Batch-reconciles origination records against an independent settlement feed, flags breaks (missing, duplicate, mismatched, orphaned settlements), and stores full drill-down history in Postgres.",
+      status: "live",
       icon: GitCompareArrows,
       color: "var(--cat-aqua)",
     },
@@ -72,7 +81,7 @@ export default function Home() {
           Every module below reads from the same underlying multi-channel transaction data —
           credit, debit, wire, ACH, and Zelle, across eleven distinct origination journeys (POS,
           e-commerce, mobile wallet, digital/branch/LoanIQ/batch/IVR wire, ACH batch, and Zelle
-          mobile/online) spanning real-time and batch rails. It&apos;s one system, not four demos:
+          mobile/online) spanning real-time and batch rails. It&apos;s one system, not five demos:
           transactions flow in, get observed, get triaged by AI when something breaks, and roll up
           into reconciliation and business reporting.
         </p>
@@ -124,7 +133,7 @@ export default function Home() {
           Cold start:
         </strong>
         <span>
-          Both live modules run on a free-tier host that sleeps after ~15 minutes of no traffic
+          Every live module runs on a free-tier host that sleeps after ~15 minutes of no traffic
           and takes 30-60s to wake on the first request after that — refresh once after a moment.
           Data should always be flowing within a minute; if it still looks stuck longer than that,
           the module itself may be down.

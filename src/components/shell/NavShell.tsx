@@ -10,7 +10,6 @@ const NAV_ITEMS = [
   { href: "/support", label: "Support Agent" },
   { href: "/reconciliation", label: "Reconciliation" },
   { href: "/insights", label: "Business Insights" },
-  { href: "/about", label: "How this was built" },
 ];
 
 export function NavShell({ children }: { children: React.ReactNode }) {
