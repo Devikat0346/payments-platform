@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Overview" },
   { href: "/observability", label: "Observability" },
   { href: "/incidents", label: "Incident Copilot" },
+  { href: "/support", label: "Support Agent" },
   { href: "/reconciliation", label: "Reconciliation" },
   { href: "/insights", label: "Business Insights" },
   { href: "/about", label: "How this was built" },
