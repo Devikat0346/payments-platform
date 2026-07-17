@@ -67,6 +67,10 @@ describe("fmtCompactMoney", () => {
   it("uses M suffix for millions", () => {
     expect(fmtCompactMoney(2_340_000)).toBe("$2.34M");
   });
+
+  it("uses B suffix for billions", () => {
+    expect(fmtCompactMoney(1_330_370_000)).toBe("$1.33B");
+  });
 });
 
 describe("fmtBudgetBurn", () => {

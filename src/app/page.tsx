@@ -63,8 +63,8 @@ export default function Home() {
       href: "/insights",
       title: "Business Insights",
       description:
-        "Payments economics (interchange, fees), KPI tracking, and ROI/scenario modeling for new payments initiatives — a business-case dashboard.",
-      status: "soon",
+        "Payments economics per rail, a backtested revenue/volume forecast, and a rail-shift ROI scenario calculator — computed from the same shared transaction ledger as the rest of this platform.",
+      status: "live",
       icon: LineChart,
       color: "var(--cat-yellow)",
     },
